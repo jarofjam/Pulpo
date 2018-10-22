@@ -1,64 +1,48 @@
 package com.example.demo.controller;
 
-import com.example.demo.exception.*;
+import com.example.demo.domain.AppUser;
+import com.example.demo.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @RestController
 public class demoController {
 
-    private Map<String, Map<String, String>> list = new HashMap<String, Map<String, String>>() {{
-        put("1", new HashMap<String, String>() {{ put("data", "DATA_1"); }});
-        put("2", new HashMap<String, String>() {{ put("data", "DATA_2"); }});
-        put("3", new HashMap<String, String>() {{ put("data", "DATA_3"); }});
-    }};
-    private int counter = list.size() + 1;
+    private final UserRepository userRepository;
 
+    @Autowired
+    public demoController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @RequestMapping(value = "/api/demo", method = RequestMethod.GET)
-    public Map<String, Map<String, String>> getAll() {
-        return list;
+    public List<AppUser> getAll() {
+        return userRepository.findAll();
     }
 
     @RequestMapping(value = "api/demo", method = RequestMethod.POST)
-    public Map<String, String> create(@RequestBody Map<String, String> data) {
-        list.put(String.valueOf(counter++), data);
-
-        return data;
+    public AppUser create(@RequestBody AppUser appUser) {
+        return userRepository.save(appUser);
     }
 
     @RequestMapping(value = "api/demo/{id}", method = RequestMethod.GET)
-    public Map<String, String> read(@PathVariable String id) {
-        Map<String, String> dataUnit = list.get(id);
-        if (dataUnit == null) {
-            throw new NotFoundException();
-        }
-
-        return dataUnit;
+    public AppUser read(@PathVariable("id") AppUser appUser) {
+        return appUser;
     }
 
     @RequestMapping(value = "api/demo/{id}", method = RequestMethod.PUT)
-    public Map<String, String> update(@PathVariable String id, @RequestBody Map<String, String> data) {
-        checkId(id);
+    public AppUser update(@PathVariable("id") AppUser appUserFromDb, @RequestBody AppUser appUser) {
+        BeanUtils.copyProperties(appUser, appUserFromDb, "id");
 
-        list.put(id, data);
-
-        return data;
+        return userRepository.save(appUserFromDb);
     }
 
     @RequestMapping(value = "api/demo/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable String id) {
-        checkId(id);
-
-        list.remove(id);
-    }
-
-    private void checkId(String id) {
-        if (list.get(id) == null) {
-            throw new NotFoundException();
-        }
+    public void delete(@PathVariable("id") AppUser appUser) {
+        userRepository.delete(appUser);
     }
 
 }
