@@ -5,21 +5,36 @@ Vue.component('user-form', {
     props: ['users'],
     data: function() {
         return {
-            data: ''
+            login: '',
+            password: '',
+            email: '',
+            realName: ''
         }
     },
     template:
         '<div>' +
-            '<input type="text" placeholder="Enter something" v-model="data"/>' +
+            '<input type="text" placeholder="Enter login" v-model="login"/>' +
+            '<input type="text" placeholder="Enter password" v-model="password"/>' +
+            '<input type="text" placeholder="Enter your email" v-model="email"/>' +
+            '<input type="text" placeholder="Enter your real name" v-model="realName"/>' +
             '<input type="button" value="Add" v-on:click="save_user" />' +
         '</div>',
     methods: {
         save_user: function () {
-            var user = { data: this.data };
+            var user = {
+                login: this.login,
+                password: this.password,
+                email: this.email,
+                realName: this.realName
+            };
+
             userApi.save({}, user).then(result =>
                 result.json().then(data => {
                     this.users.push(data);
-                    this.data = '';
+                    this.login = '';
+                    this.password = '';
+                    this.email = '';
+                    this.realName = '';
                 })
             );
         }
@@ -30,11 +45,19 @@ Vue.component('user-info', {
     props: ['user', 'users'],
     template:
         '<div>' +
-            '<b>{{ user.id }}) </b>{{ user.data }}' +
-            '<span style="position: absolute; right: 0;">' +
+            '<span>' +
+                '<b>User#{{ user.id }}</b><br>' +
+                '<i>Joined: {{ user.joined }}</i>' +
+                '<div><i>Login:</i> <b>{{ user.login }} </b></div>' +
+                '<div><i>Password:</i> <b>{{ user.password }}</b></div>' +
+                '<div><i>E-mail:</i> <b>{{ user.email }}</b></div>' +
+                '<div><i>Real name:</i> <b>{{ user.realName }}</b></div>' +
+            '</span>' +
+            '<div style="padding: 10px; margin-top: 10px; border-top: 2px dashed grey">' +
                 '<input type="button" value="edit" />' +
                 '<input type="button" value="delete" v-on:click="remove" />' +
-            '</span>' +
+            '</div>' +
+            '<hr>' +
         '</div>',
     methods: {
         remove: function () {
@@ -50,7 +73,7 @@ Vue.component('user-info', {
 Vue.component('user-list', {
     props: ['users'],
     template:
-        '<div style="position: relative; width: 300px;">' +
+        '<div style="position: relative; width: 250px;">' +
             '<user-form :users="users"/>' +
             '<user-info v-for="user in users" :key="user.id" :users="users" :user="user" />' +
         '</div>',
