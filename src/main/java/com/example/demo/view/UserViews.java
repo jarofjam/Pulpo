@@ -1,6 +1,6 @@
-package com.example.demo.domain;
+package com.example.demo.view;
 
-public final class Views {
+public final class UserViews {
     public interface personInfo {}
 
     public interface userInfo extends personInfo {}

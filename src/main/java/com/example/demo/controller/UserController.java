@@ -1,56 +1,47 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.AppUser;
-import com.example.demo.domain.Views;
-import com.example.demo.repository.AppUserRepository;
+import com.example.demo.domain.User;
+import com.example.demo.service.UserService;
+import com.example.demo.view.UserViews;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 public class UserController {
 
-    private final AppUserRepository appUserRepository;
-
     @Autowired
-    public UserController(AppUserRepository appUserRepository) {
-        this.appUserRepository = appUserRepository;
-    }
+    private UserService userService;
 
     @RequestMapping(value = "api/user", method = RequestMethod.GET)
-    @JsonView(Views.userInfo.class)
-    public List<AppUser> getAll() {
-        return appUserRepository.findAll();
+    @JsonView(UserViews.fullInfo.class)
+    public List<User> getAll() {
+        return userService.getAll();
     }
 
     @RequestMapping(value = "api/user", method = RequestMethod.POST)
-    @JsonView(Views.userInfo.class)
-    public AppUser create(@RequestBody AppUser appUser) {
-        appUser.setJoined(LocalDate.now());
-        return appUserRepository.save(appUser);
+    @JsonView(UserViews.fullInfo.class)
+    public User create(@RequestBody User user) {
+        return userService.create(user);
     }
 
     @RequestMapping(value = "api/user/{id}", method = RequestMethod.GET)
-    @JsonView(Views.fullInfo.class)
-    public AppUser read(@PathVariable("id") AppUser appUser) {
-        return appUser;
+    @JsonView(UserViews.fullInfo.class)
+    public User read(@PathVariable String id) {
+        return userService.read(id);
     }
 
     @RequestMapping(value = "api/user/{id}", method = RequestMethod.PUT)
-    @JsonView(Views.userInfo.class)
-    public AppUser update(@PathVariable("id") AppUser appUserFromDb, @RequestBody AppUser appUser) {
-        BeanUtils.copyProperties(appUser, appUserFromDb, "id");
-
-        return appUserRepository.save(appUserFromDb);
+    @JsonView(UserViews.fullInfo.class)
+    public User update(@PathVariable String id, @RequestBody User user) {
+        return userService.update(id, user);
     }
 
     @RequestMapping(value = "api/user/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable("id") AppUser appUser) {
-        appUserRepository.delete(appUser);
+    public void delete(@PathVariable String id) {
+        userService.delete(id);
     }
 
 }

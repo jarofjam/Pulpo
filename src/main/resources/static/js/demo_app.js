@@ -7,16 +7,18 @@ Vue.component('user-form', {
         return {
             login: '',
             password: '',
-            email: '',
-            realName: ''
+            role: '',
+            realName: '',
+            department: ''
         }
     },
     template:
         '<div>' +
             '<input type="text" placeholder="Enter login" v-model="login"/>' +
             '<input type="text" placeholder="Enter password" v-model="password"/>' +
-            '<input type="text" placeholder="Enter your email" v-model="email"/>' +
-            '<input type="text" placeholder="Enter your real name" v-model="realName"/>' +
+            '<input type="text" placeholder="Enter user role" v-model="role"/>' +
+            '<input type="text" placeholder="Enter user real name" v-model="realName"/>' +
+            '<input type="text" placeholder="Enter user department" v-model="department"/>' +
             '<input type="button" value="Add" v-on:click="save_user" />' +
         '</div>',
     methods: {
@@ -24,8 +26,9 @@ Vue.component('user-form', {
             var user = {
                 login: this.login,
                 password: this.password,
-                email: this.email,
-                realName: this.realName
+                role: this.role,
+                realName: this.realName,
+                department: this.department
             };
 
             userApi.save({}, user).then(result =>
@@ -33,8 +36,9 @@ Vue.component('user-form', {
                     this.users.push(data);
                     this.login = '';
                     this.password = '';
-                    this.email = '';
+                    this.role = '';
                     this.realName = '';
+                    this.department = '';
                 })
             );
         }
@@ -47,11 +51,13 @@ Vue.component('user-info', {
         '<div>' +
             '<span>' +
                 '<b>User#{{ user.id }}</b><br>' +
-                '<i>Joined: {{ user.joined }}</i>' +
+                '<i>Created: {{ user.created }}</i><br>' +
+                '<i>Removed: {{ user.removed }}</i>' +
                 '<div><i>Login:</i> <b>{{ user.login }} </b></div>' +
                 '<div><i>Password:</i> <b>{{ user.password }}</b></div>' +
-                '<div><i>E-mail:</i> <b>{{ user.email }}</b></div>' +
                 '<div><i>Real name:</i> <b>{{ user.realName }}</b></div>' +
+                '<div><i>Role:</i> <b>{{ user.role }}</b></div>' +
+                '<div><i>Department:</i> <b>{{ user.department }}</b></div>' +
             '</span>' +
             '<div style="padding: 10px; margin-top: 10px; border-top: 2px dashed grey">' +
                 '<input type="button" value="edit" />' +
