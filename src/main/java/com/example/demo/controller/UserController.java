@@ -29,18 +29,18 @@ public class UserController {
 
     @RequestMapping(value = "api/user/{id}", method = RequestMethod.GET)
     @JsonView(UserViews.fullInfo.class)
-    public User read(@PathVariable String id) {
+    public User read(@PathVariable Long id) {
         return userService.read(id);
     }
 
     @RequestMapping(value = "api/user/{id}", method = RequestMethod.PUT)
     @JsonView(UserViews.fullInfo.class)
-    public User update(@PathVariable String id, @RequestBody User user) {
+    public User update(@PathVariable Long id, @RequestBody User user) {
         return userService.update(id, user);
     }
 
     @RequestMapping(value = "api/user/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable String id) {
+    public void delete(@PathVariable Long id) {
         userService.delete(id);
     }
 

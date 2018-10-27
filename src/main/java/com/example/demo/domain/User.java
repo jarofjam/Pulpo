@@ -22,29 +22,24 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonView(UserViews.fullInfo.class)
     private Long id;
-
     @Column(updatable =false)
     @JsonView(UserViews.fullInfo.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
-
     @Column(updatable =false)
     @JsonView(UserViews.fullInfo.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime removed;
+    @JsonView(UserViews.personInfo.class)
+    private Integer role;
 
     @JsonView(UserViews.userInfo.class)
     private String login;
-
     @JsonView(UserViews.userInfo.class)
     private String password;
 
     @JsonView(UserViews.personInfo.class)
     private String realName;
-
-    @JsonView(UserViews.personInfo.class)
-    private Integer role;
-
     @JsonView(UserViews.personInfo.class)
     private String department;
 }

@@ -33,32 +33,25 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User read(String id) {
-        return getFromDbByStringId(id);
+    public User read(Long id) {
+        return getFromDbById(id);
     }
 
 //Solve concurrent requests problem
 //Validate user??
-    public User update(String id, User user) {
-        User userFromDb = getFromDbByStringId(id);
+    public User update(Long id, User user) {
+        User userFromDb = getFromDbById(id);
 
         BeanUtils.copyProperties(user, userFromDb, "id");
 
         return userRepository.save(userFromDb);
     }
 
-    public void delete(String id) {
-        userRepository.delete(getFromDbByStringId(id));
+    public void delete(Long id) {
+        userRepository.delete(getFromDbById(id));
     }
 
-    private User getFromDbByStringId(String stringId) {
-        long id;
-        try {
-            id = Long.parseLong(stringId);
-        } catch (NumberFormatException e) {
-            throw new BadRequestException();
-        }
-
+    private User getFromDbById(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             return optionalUser.get();

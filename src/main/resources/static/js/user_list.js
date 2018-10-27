@@ -93,7 +93,7 @@ Vue.component('user-list', {
 });
 
 var app = new Vue({
-    el: '#app',
+    el: '#user_list',
     template: '<user-list :users="users"/>',
     data: {
         users: []
