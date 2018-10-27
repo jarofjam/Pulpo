@@ -7,15 +7,7 @@
 * Http method PUT: to update a record with certain id in DB
 * Http method DELETE: to remove a record with certain id from DB
  ## Database
-### Contains only one type of entity - user:
-* id - primary key
-* creation date and time
-* deletion date and time
-* login
-* password
-* name
-* department
-* role
+### Contains three types of entities - user, role and request
  ## UI
 ### Allows to manipulate with database in a simple way
 * By default shows a list of all DB records
@@ -24,7 +16,7 @@
 * Provides ***delete*** button to delete certain user from DB
 ### Does not allow to update or get a certain user
  ## In addition
-### Three types of Json view are supported but not used
+### Three types of Json view for user entity are supported, but not used
 ### Services are used to separate controllers and DB
  ## A lesson of trickery  
 Although the UI does not provide any ability to update or retrieve a specific user, these operations are still available.
