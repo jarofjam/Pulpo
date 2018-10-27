@@ -8,10 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "role")
-@Getter
-@Setter
-@ToString(of = {"id", "created", "removed", "name"})
-@EqualsAndHashCode(of = {"id"})
+@Data
 public class Role {
 
     @Id
@@ -24,5 +21,6 @@ public class Role {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime removed;
 
+    private Integer value;
     private String name;
 }

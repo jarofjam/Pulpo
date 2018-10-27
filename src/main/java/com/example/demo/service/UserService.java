@@ -27,7 +27,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-//Validate user??
+//Validate user
     public User create(User user) {
         user.setCreated(LocalDateTime.now());
         return userRepository.save(user);
@@ -38,7 +38,7 @@ public class UserService {
     }
 
 //Solve concurrent requests problem
-//Validate user??
+//Validate user
     public User update(Long id, User user) {
         User userFromDb = getFromDbById(id);
 
@@ -52,10 +52,7 @@ public class UserService {
     }
 
     private User getFromDbById(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        }
-        else throw new NotFoundException();
+        User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
+        return user;
     }
 }

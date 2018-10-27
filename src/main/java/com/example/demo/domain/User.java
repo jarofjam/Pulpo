@@ -3,20 +3,14 @@ package com.example.demo.domain;
 import com.example.demo.view.UserViews;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "appUser")
-@Getter
-@Setter
-@ToString(of = {"id", "created", "removed", "login", "password", "realName", "role", "department"})
-@EqualsAndHashCode(of = {"id"})
+@Data
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

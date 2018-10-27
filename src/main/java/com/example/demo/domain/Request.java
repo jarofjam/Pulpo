@@ -8,10 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "userRequest")
-@Getter
-@Setter
-@ToString(of = {"id", "created", "removed", "deadline", "status", "isSecure", "topic", "author", "department", "performer"})
-@EqualsAndHashCode(of = {"id"})
+@Data
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
