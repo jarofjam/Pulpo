@@ -5,6 +5,8 @@ import com.example.demo.service.UserService;
 import com.example.demo.view.UserViews;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,25 +18,23 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/api/user", method = RequestMethod.GET)
-    @JsonView(UserViews.fullInfo.class)
     public List<User> getAll() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         return userService.getAll();
     }
 
     @RequestMapping(value = "/api/user", method = RequestMethod.POST)
-    @JsonView(UserViews.fullInfo.class)
     public User create(@RequestBody User user) {
         return userService.create(user);
     }
 
     @RequestMapping(value = "/api/user/{id}", method = RequestMethod.GET)
-    @JsonView(UserViews.fullInfo.class)
     public User read(@PathVariable Long id) {
         return userService.read(id);
     }
 
     @RequestMapping(value = "/api/user/{id}", method = RequestMethod.PUT)
-    @JsonView(UserViews.fullInfo.class)
     public User update(@PathVariable Long id, @RequestBody User user) {
         return userService.update(id, user);
     }

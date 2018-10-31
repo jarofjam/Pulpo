@@ -9,31 +9,28 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "appUser")
+@Table(name = "app_user")
 @Data
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(UserViews.fullInfo.class)
     private Long id;
     @Column(updatable =false)
-    @JsonView(UserViews.fullInfo.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
     @Column(updatable =false)
-    @JsonView(UserViews.fullInfo.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime removed;
-    @JsonView(UserViews.personInfo.class)
-    private Integer role;
+    private boolean active;
 
-    @JsonView(UserViews.userInfo.class)
-    private String login;
-    @JsonView(UserViews.userInfo.class)
+    //key parameter
+    //authorization does not work without second parameter
+    //and here comes this little buddy
+    private Integer a;
+
+    private String username;
     private String password;
 
-    @JsonView(UserViews.personInfo.class)
     private String realName;
-    @JsonView(UserViews.personInfo.class)
     private String department;
 }

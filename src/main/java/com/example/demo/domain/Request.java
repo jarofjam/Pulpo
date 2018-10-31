@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "userRequest")
+@Table(name = "user_request")
 @Data
 public class Request {
     @Id
@@ -26,6 +26,7 @@ public class Request {
     private Boolean isSecure;
 
     private String topic;
+    @Column(updatable = false)
     private String author;
     private String department;
     private String performer;

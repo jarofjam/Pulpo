@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+        <script th:inline="javascript">
+            var frontendData = [[${frontendData}]];
+        </script>
+    </head>
+    <body>
+        <div>Admin panel</div>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form>
+        <div>
+            <a href="/">To main page</a>
+        </div>
+        <div id="admin_panel"></div>
+        <script src="/js/user_list.js"></script>
+    </body>
+</html>
