@@ -9,6 +9,12 @@
         <script th:inline="javascript">
             var frontendData = [[${frontendData}]];
         </script>
+        <style>
+            .ui {
+                width: 40%;
+                margin: 3%;
+            }
+        </style>
     </head>
     <body>
         <div>Admin panel</div>
@@ -18,7 +24,17 @@
         <div>
             <a href="/">To main page</a>
         </div>
-        <div id="admin_panel"></div>
+
+        <div class="ui" style="float: left;">
+            List of users
+            <div id="user_list"></div>
+        </div>
+        <div class="ui" style="float: right;">
+            List of roles
+            <div id="role_list"></div>
+        </div>
+
         <script src="/js/user_list.js"></script>
+        <script src="/js/role_list.js"></script>
     </body>
 </html>

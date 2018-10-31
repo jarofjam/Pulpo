@@ -15,7 +15,6 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-
     private final UserRepository userRepository;
 
     @Autowired
@@ -43,6 +42,7 @@ public class UserService {
         User userFromDb = getFromDbById(id);
 
         BeanUtils.copyProperties(user, userFromDb, "id");
+        userFromDb.setActive(true);
 
         return userRepository.save(userFromDb);
     }

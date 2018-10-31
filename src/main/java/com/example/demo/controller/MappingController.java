@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @Controller
-public class MainController {
+public class MappingController {
 
     @Autowired
     private UserRepository userRepository;
