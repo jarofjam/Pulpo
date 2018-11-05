@@ -1,0 +1,28 @@
+.block{
+    float: left;
+    padding: 10px;
+    margin: 3px;
+    transition: 300ms;
+    border-left: 1px solid grey;
+}
+
+.block:nth-child(1) {
+    border-left: none;
+}
+
+.department,
+.template_button,
+.button {
+    cursor: pointer;
+    background-color: aliceblue;
+    margin: 5px;
+    padding: 10px;
+    transition: 300ms;
+    border-radius: 3px;
+}
+
+.department:hover,
+.template_button:hover,
+.button:hover{
+    background-color: gainsboro;
+}

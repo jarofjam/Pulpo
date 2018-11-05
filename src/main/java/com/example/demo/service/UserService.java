@@ -29,6 +29,7 @@ public class UserService {
 //Validate user
     public User create(User user) {
         user.setCreated(LocalDateTime.now());
+        user.setActive(true);
         return userRepository.save(user);
     }
 
@@ -41,7 +42,7 @@ public class UserService {
     public User update(Long id, User user) {
         User userFromDb = getFromDbById(id);
 
-        BeanUtils.copyProperties(user, userFromDb, "id");
+        BeanUtils.copyProperties(user, userFromDb, "id", "created", "removed");
         userFromDb.setActive(true);
 
         return userRepository.save(userFromDb);

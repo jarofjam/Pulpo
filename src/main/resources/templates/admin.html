@@ -6,6 +6,7 @@
         <title>Title</title>
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+
         <script th:inline="javascript">
             var frontendData = [[${frontendData}]];
         </script>
@@ -27,14 +28,14 @@
 
         <div class="ui" style="float: left;">
             List of users
-            <div id="user_list"></div>
+            <div id="user_ui"></div>
         </div>
         <div class="ui" style="float: right;">
             List of roles
-            <div id="role_list"></div>
+            <div id="role_ui"></div>
         </div>
 
-        <script src="/js/user_list.js"></script>
-        <script src="/js/role_list.js"></script>
+        <script src="/js/user_ui.js"></script>
+        <script src="/js/role_ui.js"></script>
     </body>
 </html>

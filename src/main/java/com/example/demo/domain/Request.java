@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private Long id;
     @Column(updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
@@ -26,6 +26,7 @@ public class Request {
     private Boolean isSecure;
 
     private String topic;
+    private String description;
     @Column(updatable = false)
     private String author;
     private String department;

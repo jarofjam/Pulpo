@@ -34,7 +34,7 @@ public class RoleService {
     public Role update(Long id, Role role) {
         Role roleFromDb = getFromDbById(id);
 
-        BeanUtils.copyProperties(role, roleFromDb, "id");
+        BeanUtils.copyProperties(role, roleFromDb, "id", "created", "removed");
 
         return roleRepository.save(roleFromDb);
     }
