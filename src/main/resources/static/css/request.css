@@ -25,4 +25,5 @@
 .template_button:hover,
 .button:hover{
     background-color: gainsboro;
+    transition: 300ms;
 }

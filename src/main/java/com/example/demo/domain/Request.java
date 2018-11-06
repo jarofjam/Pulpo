@@ -27,8 +27,9 @@ public class Request {
 
     private String topic;
     private String description;
+    private String comment;
     @Column(updatable = false)
-    private String author;
+    private String client;
     private String department;
     private String performer;
 }

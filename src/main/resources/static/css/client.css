@@ -1,0 +1,23 @@
+.main-column {
+    float: left;
+    padding-left: 4%;
+    padding-right: 4%;
+}
+
+.main-column:nth-child(2) {
+    border-left: 1px solid grey;
+}
+
+.title {
+    cursor: pointer;
+    background-color: aliceblue;
+    margin: 5px;
+    padding: 10px;
+    transition: 300ms;
+    border-radius: 3px;
+}
+
+.title:hover{
+    background-color: gainsboro;
+    transition: 300ms;
+}

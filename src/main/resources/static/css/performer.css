@@ -1,0 +1,19 @@
+.summary {
+    cursor: pointer;
+    background-color: aliceblue;
+    margin: 5px;
+    padding: 10px;
+    transition: 300ms;
+    border-radius: 3px;
+}
+
+.summary:hover{
+    background-color: gainsboro;
+    transition: 300ms;
+}
+
+.block {
+    float: left;
+    padding-left: 4%;
+    padding-right: 4%;
+}

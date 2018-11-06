@@ -19,8 +19,6 @@ public class UserController {
 
     @RequestMapping(value = "/api/user", method = RequestMethod.GET)
     public List<User> getAll() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         return userService.getAll();
     }
 

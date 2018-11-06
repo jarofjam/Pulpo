@@ -27,6 +27,16 @@ public class MappingController {
         return "admin";
     }
 
+    @RequestMapping(value = "/performer", method = RequestMethod.GET)
+    public String performer() {
+        return "performer";
+    }
+
+    @RequestMapping(value = "/client", method = RequestMethod.GET)
+    public String client() {
+        return "client";
+    }
+
     @RequestMapping(value = "/request", method = RequestMethod.GET)
     public String request() {
         return "request";

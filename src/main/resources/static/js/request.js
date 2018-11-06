@@ -1,5 +1,5 @@
 
-var requestApi = Vue.resource('api/request');
+var requestApi = Vue.resource('/api/client/request');
 
 Vue.component('department-list', {
     props: ['set_department'],
@@ -61,7 +61,8 @@ Vue.component('request-form', {
         return {
             message: '',
             topic: '',
-            description: ''
+            description: '',
+            comment: 'Комментарий отсутствует'
         }
     },
     template:
@@ -86,7 +87,9 @@ Vue.component('request-form', {
                 var request = {
                     topic: this.topic,
                     description: this.description,
-                    department: this.department
+                    department: this.department,
+                    comment: this.comment,
+                    status: 'Ожидает назначения исполнителя'
                 };
 
                 requestApi.save({}, request);
