@@ -88,8 +88,7 @@ Vue.component('request-form', {
                     topic: this.topic,
                     description: this.description,
                     department: this.department,
-                    comment: this.comment,
-                    status: 'Ожидает назначения исполнителя'
+                    comment: this.comment
                 };
 
                 requestApi.save({}, request);

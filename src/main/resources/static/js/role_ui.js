@@ -46,6 +46,8 @@ Vue.component('role-form', {
                     result.json().then(data => {
                         var index = getIndex(this.roles, data.id);
                         this.roles.splice(index, 1, data);
+                        this.name = '';
+                        this.description = '';
                     })
                 )
             } else {

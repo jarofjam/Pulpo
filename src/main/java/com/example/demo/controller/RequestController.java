@@ -14,9 +14,10 @@ public class RequestController {
     RequestService requestService;
 
 //Client
+
     @RequestMapping(value = "/api/client/request", method = RequestMethod.GET)
-    public List<Request> findAllByClient() {
-        return requestService.getByClientId();
+    public List<Request> findAllByClient(@RequestParam(name="status", required=false, defaultValue="ALL") String status) {
+        return requestService.findAllByClientAndStatus(status);
     }
 
     @RequestMapping(value = "/api/client/request", method = RequestMethod.POST)
@@ -25,19 +26,19 @@ public class RequestController {
     }
 
     @RequestMapping(value = "/api/client/request/{id}", method = RequestMethod.PUT)
-    public Request updateDescription(@PathVariable Long id, @RequestBody Request request) {
-        return requestService.updateDescription(id, request);
+    public Request updateByClient(@PathVariable Long id, @RequestBody Request request) {
+        return requestService.updateByClient(id, request);
     }
 
 //Performer
-    @RequestMapping(value = "/api/department/request", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/performer/department/request", method = RequestMethod.GET)
     public List<Request> findAllByDepartment() {
-        return requestService.findAllByDepartment();
+        return requestService.findAllByPerformerDepartment();
     }
 
     @RequestMapping(value = "/api/performer/request", method = RequestMethod.GET)
     public List<Request> findAllByPerformer() {
-        return requestService.findAllByPefrormer();
+        return requestService.findAllByPerformer();
     }
 
     @RequestMapping(value = "api/performer/request/{id}", method = RequestMethod.PUT)

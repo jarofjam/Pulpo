@@ -16,13 +16,15 @@ public class Request {
     @Column(updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
-    @Column(updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime removed;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime deadline;
+
+//    @ElementCollection(targetClass = Status.class, fetch = FetchType.EAGER)
     private String status;
+
     private Boolean isSecure;
 
     private String topic;
@@ -32,4 +34,5 @@ public class Request {
     private String client;
     private String department;
     private String performer;
+    private String cancelInfo;
 }

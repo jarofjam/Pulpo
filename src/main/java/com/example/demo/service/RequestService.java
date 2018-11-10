@@ -5,7 +5,6 @@ import com.example.demo.domain.User;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.RequestRepository;
 import com.example.demo.repository.UserRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,38 +33,53 @@ public class RequestService {
 
         request.setClient(String.valueOf(currentUser.getId()));
         request.setCreated(LocalDateTime.now());
+        request.setStatus("NEW");
 
         return requestRepository.save(request);
     }
 
-    public Request updateDescription(Long id, Request request) {
+    public Request updateByClient(Long id, Request request) {
 
         Request requestFromDb = getFromDbById(id);
 
-        requestFromDb.setDescription(request.getDescription());
+        if (requestFromDb.getRemoved() != null) {
+            return requestFromDb;
+        }
+
+        if (request.getDescription() == null) {
+            requestFromDb.setStatus("CANCELED");
+            requestFromDb.setRemoved(LocalDateTime.now());
+            requestFromDb.setCancelInfo("заказчиком");
+        } else {
+            requestFromDb.setDescription(request.getDescription());
+        }
 
         return requestRepository.save(requestFromDb);
     }
 
-    public List<Request> getByClientId() {
+    public List<Request> findAllByClientAndStatus(String status) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         User currentUser = userRepository.findByUsername(currentUsername);
 
-        return requestRepository.findAllByClient(String.valueOf(currentUser.getId()));
+        if("ALL".equals(status)) {
+            return requestRepository.findAllByClient(String.valueOf(currentUser.getId()));
+        } else {
+            return requestRepository.findAllByClientAndStatus(String.valueOf(currentUser.getId()), status);
+        }
     }
 
 //Performer
-    public List<Request> findAllByDepartment() {
+    public List<Request> findAllByPerformerDepartment() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         User currentUser = userRepository.findByUsername(currentUsername);
 
-        return requestRepository.findAllByDepartment(currentUser.getDepartment());
+        return requestRepository.findAllByPerformerDepartment(currentUser.getDepartment());
     }
 
-    public List<Request> findAllByPefrormer() {
+    public List<Request> findAllByPerformer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         User currentUser = userRepository.findByUsername(currentUsername);

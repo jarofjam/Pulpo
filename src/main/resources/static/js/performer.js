@@ -10,13 +10,14 @@ function getIndex(list, id) {
 }
 
 var performerApi = Vue.resource('/api/performer/request/{id}');
-var departmentApi = Vue.resource('/api/department/request');
+var departmentApi = Vue.resource('/api/performer/department/request');
 
 Vue.component('public-request-summary', {
     props: ['request', 'choose_outer'],
     template:
-        '<div v-on:click="choose_inner" class="summary" v-if="request.performer === null && request.status != \'Ожидает проверки модератором\'">' +
+        '<div v-on:click="choose_inner" class="summary">' +
             '<div><b>{{ request.topic }}</b></div><hr/>' +
+            '<div><i>Дата создания: {{ request.created }}</i></div>' +
             '<div><i>Срок выполнения: {{ request.deadline }}</i></div>' +
         '</div>',
     methods: {
@@ -31,6 +32,7 @@ Vue.component('private-request-summary', {
     template:
         '<div v-on:click="choose_inner" class="summary">' +
             '<div><b>{{ request.topic }}</b></div><hr/>' +
+            '<div><i>Дата создания: {{ request.created }}</i></div>' +
             '<div><i>Срок выполнения: {{ request.deadline }}</i></div>' +
         '</div>',
     methods: {
@@ -43,25 +45,29 @@ Vue.component('private-request-summary', {
 Vue.component('public-requests', {
     props: ['requests', 'choose_outer'],
     template:
-        '<div class="block" style="width: 30%">' +
+        '<div>' +
             '<p>Заявки моего департамента:</p><hr/>' +
-            '<public-request-summary v-for="request in requests" :key="request.id" :request="request" :choose_outer="choose_outer"/>' +
+            '<p v-if="requests === []">Заявки отсутстсвуют</p>' +
+            '<template v-else>' +
+                '<public-request-summary v-for="request in requests" :key="request.id" :request="request" :choose_outer="choose_outer"/>' +
+            '</template>' +
         '</div>'
 });
 
 Vue.component('private-requests', {
     props: ['requests', 'choose_outer'],
     template:
-        '<div class="block" style="width: 30%">' +
+        '<div>' +
             '<p>Мои заявки: </p><hr/>' +
-            '<private-request-summary v-for="request in requests" :key="request.id" :request="request" :choose_outer="choose_outer"/>' +
+            '<private-request-summary v-if="requests" v-for="request in requests" :key="request.id" :request="request" :choose_outer="choose_outer"/>' +
+            '<div v-else>Заявки отсутстсвуют</div>' +
         '</div>'
 });
 
 Vue.component('request-info', {
     props: ['request', 'requestByDepartment', 'requestByPerformer'],
     template:
-        '<div class="block" style="width: 50%; border-left: 1px solid grey;">' +
+        '<div>' +
             '<p>Детали заявки: </p><hr/>' +
             '<p><b>Статус: </b>{{ request.status }}</p>' +
             '<p><b>Отдел: </b>{{ request.department }}</p>' +
@@ -103,7 +109,7 @@ Vue.component('request-form', {
         }
     },
     template:
-        '<div class="block" style="width: 50%; border-left: 1px solid grey;">' +
+        '<div>' +
             '<p>Детали заявки: </p><hr/>' +
             '<p><b>Статус: </b>{{ request.status }}</p>' +
             '<p><b>Отдел: </b>{{ request.department }}</p>' +
@@ -117,7 +123,7 @@ Vue.component('request-form', {
             var request = {
                 status: this.request.status,
                 comment: this.comment
-            }
+            };
 
             performerApi.update({id: this.request.id}, request).then(result =>
             result.json().then(data => {
@@ -133,15 +139,15 @@ var performer = new Vue({
     el: '#performer',
     template:
         '<div>' +
-            '<div>' +
+            '<div class="block" style="position: fixed; border-right: 1px solid grey;">' +
                 '<p class="summary" v-on:click="setPublic">Заявки моего департамента</p>'+
                 '<p class="summary" v-on:click="setPrivate">Мои заявки</p>'+
             '</div>' +
-            '<div>' +
+            '<div class="block" style="width: 30%; margin-left: 20%">' +
                 '<public-requests v-if="public" :requests="requestByDepartment" :choose_outer="choose_outer" />' +
                 '<private-requests v-if="!public" :requests="requestByPerformer" :choose_outer="choose_outer" />' +
             '</div>' +
-            '<div v-if="request">' +
+            '<div v-if="request" class="block" style="width: 40%; border-left: 1px solid grey; position: fixed; left:55%">' +
                 '<request-info v-if="this.form_type === \'public\'" :request="request" :requestByDepartment="requestByDepartment" :requestByPerformer="requestByPerformer" />' +
                 '<request-form v-else :request="request" :requestByDepartment="requestByDepartment" :requestByPerformer="requestByPerformer" />' +
             '</div>' +

@@ -1,6 +1,6 @@
 .summary {
     cursor: pointer;
-    background-color: aliceblue;
+    background-color: #D3D3D3;
     margin: 5px;
     padding: 10px;
     transition: 300ms;
@@ -8,12 +8,12 @@
 }
 
 .summary:hover{
-    background-color: gainsboro;
+    background-color: #C0C0C0;
     transition: 300ms;
 }
 
 .block {
     float: left;
-    padding-left: 4%;
-    padding-right: 4%;
+    padding-left: 2%;
+    padding-right: 2%;
 }

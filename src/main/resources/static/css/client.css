@@ -1,16 +1,12 @@
-.main-column {
+.block {
     float: left;
-    padding-left: 4%;
-    padding-right: 4%;
-}
-
-.main-column:nth-child(2) {
-    border-left: 1px solid grey;
+    padding-left: 2%;
+    padding-right: 2%;
 }
 
 .title {
     cursor: pointer;
-    background-color: aliceblue;
+    background-color: #D3D3D3;
     margin: 5px;
     padding: 10px;
     transition: 300ms;
@@ -18,6 +14,6 @@
 }
 
 .title:hover{
-    background-color: gainsboro;
+    background-color: #C0C0C0;
     transition: 300ms;
 }

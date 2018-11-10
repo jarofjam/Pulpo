@@ -14,7 +14,7 @@
 .template_button,
 .button {
     cursor: pointer;
-    background-color: aliceblue;
+    background-color: #D3D3D3;
     margin: 5px;
     padding: 10px;
     transition: 300ms;
@@ -24,6 +24,6 @@
 .department:hover,
 .template_button:hover,
 .button:hover{
-    background-color: gainsboro;
+    background-color: #C0C0C0;
     transition: 300ms;
 }
