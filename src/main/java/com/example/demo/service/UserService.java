@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.User;
-import com.example.demo.exception.BadRequestException;
+import com.example.demo.entity.User;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -22,7 +20,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getAll() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
@@ -34,13 +32,13 @@ public class UserService {
     }
 
     public User read(Long id) {
-        return getFromDbById(id);
+        return findInDbById(id);
     }
 
 //Solve concurrent requests problem
 //Validate user
     public User update(Long id, User user) {
-        User userFromDb = getFromDbById(id);
+        User userFromDb = findInDbById(id);
 
         BeanUtils.copyProperties(user, userFromDb, "id", "created", "removed");
         userFromDb.setActive(true);
@@ -49,10 +47,10 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        userRepository.delete(getFromDbById(id));
+        userRepository.delete(findInDbById(id));
     }
 
-    private User getFromDbById(Long id) {
+    private User findInDbById(Long id) {
         User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
         return user;
     }

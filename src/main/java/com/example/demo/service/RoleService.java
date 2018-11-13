@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.Role;
+import com.example.demo.entity.Role;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.RoleRepository;
 import org.springframework.beans.BeanUtils;
@@ -19,7 +19,7 @@ public class RoleService {
         this.roleRepository = roleRepository;
     }
 
-    public List<Role> getAll() {
+    public List<Role> findAll() {
         return roleRepository.findAll();
     }
 
@@ -32,7 +32,7 @@ public class RoleService {
 //Solve concurrent requests problem
 //Validate user
     public Role update(Long id, Role role) {
-        Role roleFromDb = getFromDbById(id);
+        Role roleFromDb = findInDbById(id);
 
         BeanUtils.copyProperties(role, roleFromDb, "id", "created", "removed");
 
@@ -40,14 +40,14 @@ public class RoleService {
     }
 
     public Role read(Long id) {
-        return getFromDbById(id);
+        return findInDbById(id);
     }
 
     public void delete(Long id) {
-        roleRepository.delete(getFromDbById(id));
+        roleRepository.delete(findInDbById(id));
     }
 
-    private Role getFromDbById(Long id) {
+    private Role findInDbById(Long id) {
         Role user = roleRepository.findById(id).orElseThrow(NotFoundException::new);
         return user;
     }

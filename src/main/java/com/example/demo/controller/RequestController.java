@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.Request;
+import com.example.demo.entity.Request;
 import com.example.demo.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +16,8 @@ public class RequestController {
 //Client
 
     @RequestMapping(value = "/api/client/request", method = RequestMethod.GET)
-    public List<Request> findAllByClient(@RequestParam(name="status", required=false, defaultValue="ALL") String status) {
-        return requestService.findAllByClientAndStatus(status);
+    public List<Request> findAllByAuthor(@RequestParam(name="status", required=false, defaultValue="ALL") String status) {
+        return requestService.findAllByAuthorAndStatus(status);
     }
 
     @RequestMapping(value = "/api/client/request", method = RequestMethod.POST)
@@ -49,7 +49,7 @@ public class RequestController {
 //Moderator
     @RequestMapping(value = "/api/moderator/request", method = RequestMethod.GET)
     public List<Request> findAll() {
-        return requestService.getAll();
+        return requestService.findAll();
     }
 
     @RequestMapping(value = "/api/moderator/request/{id}", method = RequestMethod.DELETE)

@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.Request;
-import com.example.demo.domain.User;
+import com.example.demo.entity.Request;
+import com.example.demo.entity.User;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.RequestRepository;
 import com.example.demo.repository.UserRepository;
@@ -33,14 +33,14 @@ public class RequestService {
 
         request.setClient(String.valueOf(currentUser.getId()));
         request.setCreated(LocalDateTime.now());
-        request.setStatus("NEW");
+        request.setStatus("CHECKED");
 
         return requestRepository.save(request);
     }
 
     public Request updateByClient(Long id, Request request) {
 
-        Request requestFromDb = getFromDbById(id);
+        Request requestFromDb = findInDbById(id);
 
         if (requestFromDb.getRemoved() != null) {
             return requestFromDb;
@@ -57,7 +57,7 @@ public class RequestService {
         return requestRepository.save(requestFromDb);
     }
 
-    public List<Request> findAllByClientAndStatus(String status) {
+    public List<Request> findAllByAuthorAndStatus(String status) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
@@ -92,7 +92,7 @@ public class RequestService {
         String currentUsername = authentication.getName();
         User currentUser = userRepository.findByUsername(currentUsername);
 
-        Request requestFromDb = getFromDbById(id);
+        Request requestFromDb = findInDbById(id);
 
         requestFromDb.setPerformer(String.valueOf(currentUser.getId()));
         requestFromDb.setStatus(request.getStatus());
@@ -102,17 +102,17 @@ public class RequestService {
     }
 
 //Moderator
-    public List<Request> getAll() {
+    public List<Request> findAll() {
     return requestRepository.findAll();
 }
 
     public void delete(Long id) {
-        requestRepository.delete(getFromDbById(id));
+        requestRepository.delete(findInDbById(id));
     }
 
 
 //Additional
-    private Request getFromDbById(Long id) {
+    private Request findInDbById(Long id) {
 
         Request request = requestRepository.findById(id).orElseThrow(NotFoundException::new);
 

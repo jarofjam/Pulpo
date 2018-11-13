@@ -156,10 +156,10 @@ var client = new Vue({
                 '<div class="title" v-on:click="all_status">Все</div>' +
                 '<status-button v-for="status in statuses" :status="status" :choose_status="choose_status" :key="status.id" />' +
             '</div>' +
-            '<div class="block" style="width: 25%; border-left: 1px solid gray;">' +
+            '<div class="block" style="width: 370px; border-left: 1px solid gray;">' +
                 '<title-list  :requests="requests" :statuses="statuses" :choose_outer="choose_outer" :semi_topic="semi_topic"/>' +
             '</div>' +
-            '<div class="block" style="width: 50%; position: fixed; left:50%; text-align: left; border-left: 1px solid gray;">' +
+            '<div class="block" style="width: 500px; position: fixed; left:700px; text-align: left; border-left: 1px solid gray;">' +
                 '<request-content  :request="request" :requests="requests" :statuses="statuses" :all="all"/>' +
             '</div>' +
         '</div>',

@@ -4,7 +4,7 @@ var requestApi = Vue.resource('/api/client/request');
 Vue.component('department-list', {
     props: ['set_department'],
     template:
-        '<div class="block" style="width: 15%;">' +
+        '<div class="block" style="width: 200px; position: fixed;">' +
             '<p>Выберите отдел</p><hr/>' +
             '<div class="department" v-on:click="CR">Бухгалтерия</div>' +
             '<div class="department" v-on:click="IT">IT</div>' +
@@ -37,11 +37,11 @@ Vue.component('template-preview', {
 Vue.component('template-list', {
     props: ['department', 'set_template'],
     template:
-        '<div v-if="department" class="block" style="width: 25%;">' +
+        '<div v-if="department" class="block" style="width: 370px; margin-left: 250px;">' +
             '<p><b>{{ department }}</b><br/>' +
                 '</p><hr/>' +
             '<div>' +
-                '<template v-for="i in 5">' +
+                '<template v-for="i in 15">' +
                     '<template-preview class="template_button" :i="i" />' +
                 '</template>' +
                 '<hr/>' +
@@ -66,7 +66,7 @@ Vue.component('request-form', {
         }
     },
     template:
-        '<div v-if="form" class="block" style="width: 45%; text-align: left;">' +
+        '<div v-if="form" class="block" style="width: 450px; text-align: left; position: fixed; left: 670px;">' +
             '<p>Форма заявки</p><hr/>' +
             '<template v-if="form.type === \'new\' ">' +
                 '<p><b>Отдел: </b>{{ department }}</p>' +

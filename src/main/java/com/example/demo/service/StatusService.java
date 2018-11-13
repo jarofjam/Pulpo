@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.Status;
+import com.example.demo.entity.Status;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.StatusRepository;
 import org.springframework.beans.BeanUtils;
@@ -25,12 +26,17 @@ public class StatusService {
     }
 
     public Status create(Status status) {
+
         status.setCreated(LocalDateTime.now());
         return statusRepository.save(status);
     }
 
+    public Status read(String id) {
+        return findInDbById(id);
+    }
+
     public Status update(String id, Status status) {
-        Status statusFromDb = getFromDbById(id);
+        Status statusFromDb = findInDbById(id);
 
         BeanUtils.copyProperties(status, statusFromDb, "id", "created", "removed");
 
@@ -38,11 +44,11 @@ public class StatusService {
     }
 
     public void delete(String id) {
-        statusRepository.delete(getFromDbById(id));
+        statusRepository.delete(findInDbById(id));
     }
 
 
-    private Status getFromDbById(String id) {
+    private Status findInDbById(String id) {
 
         Status status = statusRepository.findById(id).orElseThrow(NotFoundException::new);
 

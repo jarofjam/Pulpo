@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.Status;
+import com.example.demo.entity.Status;
 import com.example.demo.service.StatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +16,11 @@ public class StatusController {
     @RequestMapping(value = "/api/status", method = RequestMethod.GET)
     public List<Status> findAll() {
         return statusService.findAll();
+    }
+
+    @RequestMapping(value = "/api/status/{id}", method = RequestMethod.GET)
+    public Status read(@PathVariable String id) {
+        return statusService.read(id);
     }
 
     @RequestMapping(value = "/api/status", method = RequestMethod.POST)

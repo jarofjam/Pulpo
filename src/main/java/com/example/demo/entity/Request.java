@@ -1,4 +1,4 @@
-package com.example.demo.domain;
+package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user_request")
 @Data
+@NoArgsConstructor
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
