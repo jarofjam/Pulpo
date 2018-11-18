@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Request;
-import com.example.demo.entity.User;
+import com.example.demo.domain.Request;
+import com.example.demo.domain.User;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.RequestRepository;
 import com.example.demo.repository.UserRepository;

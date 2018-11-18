@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Role;
+import com.example.demo.domain.Role;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.RoleRepository;
 import org.springframework.beans.BeanUtils;

@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Status;
-import com.example.demo.exception.BadRequestException;
+import com.example.demo.domain.Status;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.StatusRepository;
 import org.springframework.beans.BeanUtils;

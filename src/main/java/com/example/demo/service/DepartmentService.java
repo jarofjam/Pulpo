@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Department;
+import com.example.demo.domain.Department;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.UserRepository;

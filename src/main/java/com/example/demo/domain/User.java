@@ -1,17 +1,17 @@
-package com.example.demo.entity;
+package com.example.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "role")
+@Table(name = "app_user")
 @Data
 @NoArgsConstructor
-public class Role {
-
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -20,7 +20,19 @@ public class Role {
     private LocalDateTime created;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime removed;
+    private boolean active;
 
-    private String name;
-    private String description;
+    //key parameter
+    //authorization does not work without second parameter
+    //and here comes this little buddy
+    private Integer a;
+
+    private String username;
+    private String password;
+
+    private String realName;
+    private String department;
+/*
+    @ManyToOne
+    private Department managerOf;*/
 }
