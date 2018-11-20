@@ -1,3 +1,4 @@
+# Readme is not relevant
 ## Pages
 * / - main page
 * /admin - represents admin features
