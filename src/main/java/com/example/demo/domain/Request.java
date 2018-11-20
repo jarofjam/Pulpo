@@ -23,17 +23,24 @@ public class Request {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime deadline;
 
-//    @ElementCollection(targetClass = Status.class, fetch = FetchType.EAGER)
-    private String status;
-
-    private Boolean isSecure;
-
     private String topic;
     private String description;
     private String comment;
-    @Column(updatable = false)
-    private String client;
-    private String department;
-    private String performer;
     private String cancelInfo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID_AUTHOR")
+    private User requestAuthor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DEPARTMENT_ID")
+    private Department requestDepartment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID_PERFORMER")
+    private User requestPerformer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STATUS_ID")
+    private Status requestStatus;
 }

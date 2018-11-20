@@ -30,7 +30,7 @@ public class RoleService {
     }
 
 //Solve concurrent requests problem
-//Validate user
+//Validate role
     public Role update(Long id, Role role) {
         Role roleFromDb = findInDbById(id);
 

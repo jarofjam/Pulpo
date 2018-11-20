@@ -1,19 +1,15 @@
-package com.example.demo.domain;
+package com.example.demo.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Entity
-@Table(name = "request_status")
-@Data
-@NoArgsConstructor
-public class Status {
-    @Id
+@Getter
+@Setter
+public class StatusDto {
     private String id;
 
     @Column(updatable =false)
@@ -24,6 +20,12 @@ public class Status {
 
     private String name;
 
-    @OneToMany(mappedBy = "requestStatus")
-    List<Request> requests;
+    private Boolean remove;
+
+    public boolean getRemove() {
+        if (this.remove == null) {
+            return false;
+        }
+        return this.remove;
+    }
 }

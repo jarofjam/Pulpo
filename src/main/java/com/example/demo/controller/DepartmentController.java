@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Department;
+import com.example.demo.dto.DepartmentDto;
 import com.example.demo.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,23 +15,23 @@ public class DepartmentController {
     private DepartmentService departmentService;
 
     @RequestMapping(value = "/api/department", method = RequestMethod.GET)
-    public List<Department> findAll() {
+    public List<DepartmentDto> findAll() {
         return departmentService.findAll();
     }
 
     @RequestMapping(value = "/api/department", method = RequestMethod.POST)
-    public Department create(@RequestBody Department department) {
-        return departmentService.create(department);
+    public DepartmentDto create(@RequestBody DepartmentDto departmentDto) {
+        return departmentService.create(departmentDto);
     }
 
     @RequestMapping(value = "/api/department/{id}", method = RequestMethod.GET)
-    public Department read(@PathVariable Long id) {
+    public DepartmentDto read(@PathVariable Long id) {
         return departmentService.read(id);
     }
 
     @RequestMapping(value = "/api/department/{id}", method = RequestMethod.PUT)
-    public Department update(@PathVariable Long id, @RequestBody Department department) {
-        return departmentService.update(id, department);
+    public DepartmentDto update(@PathVariable Long id, @RequestBody DepartmentDto departmentDto) {
+        return departmentService.update(id, departmentDto);
     }
 
     @RequestMapping(value = "/api/department/{id}", method = RequestMethod.DELETE)

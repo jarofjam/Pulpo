@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "app_user")
@@ -15,7 +16,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(updatable =false)
+    @Column(updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -31,8 +32,18 @@ public class User {
     private String password;
 
     private String realName;
-    private String department;
-/*
-    @ManyToOne
-    private Department managerOf;*/
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DEPARTMENT_ID_USER")
+    private Department userDepartment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DEPARTMENT_ID_MANAGER")
+    private Department managerOfDepartment;
+
+    @OneToMany(mappedBy = "requestAuthor")
+    private List<Request> requestsAuthor;
+
+    @OneToMany(mappedBy = "requestPerformer")
+    private List<Request> requestsPerformer;
 }

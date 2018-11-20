@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Department;
+import com.example.demo.dto.DepartmentDto;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.UserRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,33 +24,65 @@ public class DepartmentService {
         this.userRepository = userRepository;
     }
 
-    public List<Department> findAll() {
-        return departmentRepository.findAll();
+    public List<DepartmentDto> findAll() {
+        List<DepartmentDto> departmentDtos = new ArrayList<>();
+        List<Department> departments = departmentRepository.findAll();
+
+        for (Department department :departments) {
+            DepartmentDto departmentDto = departmentToDepartmentDto(department);
+            departmentDtos.add(departmentDto);
+        }
+
+        return departmentDtos;
     }
 
-    public Department create(Department department) {
+    public DepartmentDto create(DepartmentDto departmentDto) {
+        Department department = departmentDtoToDepartment(departmentDto);
         department.setCreated(LocalDateTime.now());
-        return departmentRepository.save(department);
+
+        return departmentToDepartmentDto(departmentRepository.save(department));
     }
 
-    public Department read(Long id) {
-        return getFromDbById(id);
+    public DepartmentDto read(Long id) {
+        return departmentToDepartmentDto(findById(id));
     }
 
-    public Department update(Long id, Department department) {
-        Department departmentFromDb = getFromDbById(id);
+    public DepartmentDto update(Long id, DepartmentDto departmentDto) {
+        Department department = findById(id);
+        departmentDto.setId(id);
 
-        BeanUtils.copyProperties(department, departmentFromDb, "id", "created", "removed");
+        if (departmentDto.getRemove()) {
+            department.setRemoved(LocalDateTime.now());
+            departmentDto.setRemoved(LocalDateTime.now());
+        } else {
+            department = departmentDtoToDepartment(departmentDto);
+        }
 
-        return departmentRepository.save(departmentFromDb);
+        return departmentToDepartmentDto(departmentRepository.save(department));
     }
 
     public void delete(Long id) {
-        departmentRepository.delete(getFromDbById(id));
+        departmentRepository.delete(findById(id));
     }
 
-    private Department getFromDbById(Long id) {
-        Department department = departmentRepository.findById(id).orElseThrow(NotFoundException::new);
+    private Department findById(Long id) {
+        return departmentRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    public static Department departmentDtoToDepartment(DepartmentDto departmentDto) {
+        Department department = new Department();
+
+        BeanUtils.copyProperties(departmentDto, department, "remove", "created", "removed");
+
         return department;
     }
+
+    public static DepartmentDto departmentToDepartmentDto(Department department) {
+        DepartmentDto departmentDto = new DepartmentDto();
+
+        BeanUtils.copyProperties(department, departmentDto, "users", "managers", "requests");
+
+        return departmentDto;
+    }
+
 }

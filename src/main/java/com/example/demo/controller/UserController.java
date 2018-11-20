@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.User;
+import com.example.demo.dto.UserDto;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,23 +15,23 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/api/user", method = RequestMethod.GET)
-    public List<User> getAll() {
+    public List<UserDto> getAll() {
         return userService.findAll();
     }
 
     @RequestMapping(value = "/api/user", method = RequestMethod.POST)
-    public User create(@RequestBody User user) {
-        return userService.create(user);
+    public UserDto create(@RequestBody UserDto userDto) {
+        return userService.create(userDto);
     }
 
     @RequestMapping(value = "/api/user/{id}", method = RequestMethod.GET)
-    public User read(@PathVariable Long id) {
+    public UserDto read(@PathVariable Long id) {
         return userService.read(id);
     }
 
     @RequestMapping(value = "/api/user/{id}", method = RequestMethod.PUT)
-    public User update(@PathVariable Long id, @RequestBody User user) {
-        return userService.update(id, user);
+    public UserDto update(@PathVariable Long id, @RequestBody UserDto userDto) {
+        return userService.update(id, userDto);
     }
 
     @RequestMapping(value = "/api/user/{id}", method = RequestMethod.DELETE)
