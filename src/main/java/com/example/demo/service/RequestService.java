@@ -36,7 +36,7 @@ public class RequestService {
         this.statusRepository = statusRepository;
     }
 
-//Customer
+//Applicant
     public RequestDto create(RequestDto requestDto) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -47,94 +47,196 @@ public class RequestService {
 
         request.setRequestAuthor(currentUser);
         request.setCreated(LocalDateTime.now());
-        request.setRequestStatus(statusRepository.findById("CHECKED").orElseThrow(NotFoundException::new));
+        request.setRequestStatus(findStatusById("CHECKED"));
 
         return requestToRequestDto(requestRepository.save(request));
     }
 
-//    public Request updateByClient(Long id, Request request) {
-//
-//        Request requestFromDb = findInDbById(id);
-//
-//        if (requestFromDb.getRemoved() != null) {
-//            return requestFromDb;
-//        }
-//
-//        if (request.getDescription() == null) {
-//            requestFromDb.setStatus("CANCELED");
-//            requestFromDb.setRemoved(LocalDateTime.now());
-//            requestFromDb.setCancelInfo("заказчиком");
-//        } else {
-//            requestFromDb.setDescription(request.getDescription());
-//        }
-//
-//        return requestRepository.save(requestFromDb);
-//    }
+    public RequestDto updateByApplicant(Long id, RequestDto requestDto) {
 
-//    public List<Request> findAllByAuthorAndStatus(String status) {
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String currentUsername = authentication.getName();
-//        User currentUser = userRepository.findByUsername(currentUsername);
-//
-//        if("ALL".equals(status)) {
-//            return requestRepository.findAllByClient(String.valueOf(currentUser.getId()));
-//        } else {
-//            return requestRepository.findAllByClientAndStatus(String.valueOf(currentUser.getId()), status);
-//        }
-//    }
+        Request request = findRequestById(id);
 
-//Performer
-//    public List<Request> findAllByPerformerDepartment() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String currentUsername = authentication.getName();
-//        User currentUser = userRepository.findByUsername(currentUsername);
-//
-//        return requestRepository.findAllByPerformerDepartment(currentUser.getDepartment());
-//    }
-
-//    public List<Request> findAllByPerformer() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String currentUsername = authentication.getName();
-//        User currentUser = userRepository.findByUsername(currentUsername);
-//
-//        return requestRepository.findAllByPerformer(String.valueOf(currentUser.getId()));
-//    }
-
-//    public Request updatePerformerStatusComment(Long id, Request request) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String currentUsername = authentication.getName();
-//        User currentUser = userRepository.findByUsername(currentUsername);
-//
-//        Request requestFromDb = findInDbById(id);
-//
-//        requestFromDb.setPerformer(String.valueOf(currentUser.getId()));
-//        requestFromDb.setStatus(request.getStatus());
-//        requestFromDb.setComment(request.getComment());
-//
-//        return requestRepository.save(requestFromDb);
-//    }
-
-//Moderator
-    public List<RequestDto> findAll() {
-        List<Request> requests = requestRepository.findAll();
-        List<RequestDto> requestDtos = new ArrayList<>();
-
-        for (Request request :requests) {
-            requestDtos.add(requestToRequestDto(request));
+        if (requestDto.getRemove()) {
+            request.setRequestStatus(findStatusById("CANCELED"));
+            request.setRemoved(LocalDateTime.now());
+            request.setCancelInfo("by applicant");
+        } else {
+            Request requestFromApplicant = requestDtoToRequest(requestDto);
+            if (requestFromApplicant.getDescription() != null) {
+                request.setDescription(requestFromApplicant.getDescription());
+            }
         }
 
-        return requestDtos;
-}
+        return requestToRequestDto(requestRepository.save(request));
+    }
+
+    public List<RequestDto> findAllByAuthorAndDepartmentAndStatus(String departmentName, String statusName) {
+        List<Request> requests;
+        Status status;
+        Department department;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User currentUser = userRepository.findByUsername(currentUsername);
+
+        if("ALL".equals(statusName)) {
+            if ("NONE".equals(departmentName)) {
+                requests = requestRepository.findAllByRequestAuthor(currentUser);
+            } else {
+                department = findDepartmentByName(departmentName);
+                requests = requestRepository.findAllByRequestAuthorAndRequestDepartment(currentUser, department);
+            }
+        } else {
+            if ("NONE".equals(departmentName)) {
+                status = findStatusByName(statusName);
+                requests = requestRepository.findAllByRequestAuthorAndRequestStatus(currentUser, status);
+            } else {
+                status = findStatusByName(statusName);
+                department = findDepartmentByName(departmentName);
+                requests = requestRepository.findAllByRequestAuthorAndRequestDepartmentAndRequestStatus(currentUser, department, status);
+            }
+        }
+
+        return requestListToRequestDtoList(requests);
+    }
+
+//Performer
+    public List<RequestDto> findAllByPerformerDepartment() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User currentUser = userRepository.findByUsername(currentUsername);
+
+        return requestListToRequestDtoList(requestRepository.findAllByRequestDepartment(currentUser.getUserDepartment()));
+    }
+
+    public List<RequestDto> findAllByPerformerAndStatus(String statusName) {
+        List<Request> requests;
+        Status status;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User currentUser = userRepository.findByUsername(currentUsername);
+
+        if ("NONE".equals(statusName)) {
+            requests = requestRepository.findAllByRequestPerformer(currentUser);
+        } else {
+            status = findStatusByName(statusName);
+            requests = requestRepository.findAllByRequestPerformerAndRequestStatus(currentUser, status);
+        }
+
+        return requestListToRequestDtoList(requests);
+    }
+
+    public RequestDto updateByPerformer(Long id, RequestDto requestDto) {
+        Request request = findRequestById(id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User currentUser = userRepository.findByUsername(currentUsername);
+
+
+        if (requestDto.getRemove()) {
+            request.setRequestStatus(findStatusById("CANCELED"));
+            request.setRemoved(LocalDateTime.now());
+            request.setCancelInfo("by performer");
+        } else if ("signUp".equals(requestDto.getPerformer())) {
+            request.setRequestPerformer(currentUser);
+        } else {
+            Request requestFromPerformer = requestDtoToRequest(requestDto);
+            if (requestFromPerformer.getComment() != null) {
+                request.setComment(requestFromPerformer.getComment());
+            }
+        }
+
+        return requestToRequestDto(requestRepository.save(request));
+    }
+
+//Moderator
+    public List<RequestDto> findAllByDepartmentAndStatus(String departmentName, String statusName) {
+        List<Request> requests;
+        Department department;
+        Status status;
+
+        if("ALL".equals(statusName)) {
+            if ("NONE".equals(departmentName)) {
+                requests = requestRepository.findAll();
+            } else {
+                department = findDepartmentByName(departmentName);
+                requests = requestRepository.findAllByRequestDepartment(department);
+            }
+        } else {
+            if ("NONE".equals(departmentName)) {
+                status = findStatusByName(statusName);
+                requests = requestRepository.findAllByRequestStatus(status);
+            } else {
+                status = findStatusByName(statusName);
+                department = findDepartmentByName(departmentName);
+                requests = requestRepository.findAllByRequestDepartmentAndRequestStatus(department, status);
+            }
+        }
+
+        return requestListToRequestDtoList(requests);
+    }
+
+    public RequestDto updateByModerator(Long id, RequestDto requestDto) {
+        Request request = findRequestById(id);
+
+        if (requestDto.getRemove()) {
+            request.setRequestStatus(findStatusById("CANCELED"));
+            request.setRemoved(LocalDateTime.now());
+            request.setCancelInfo("by moderator");
+        } else {
+            Request requestFromModerator = requestDtoToRequest(requestDto);
+
+            if (requestFromModerator.getTopic() != null) {
+                request.setTopic(requestFromModerator.getTopic());
+            }
+            if (requestFromModerator.getDescription() != null) {
+                request.setDescription(requestFromModerator.getDescription());
+            }
+            if (requestFromModerator.getComment() != null) {
+                request.setComment(requestFromModerator.getComment());
+            }
+            if (requestFromModerator.getDeadline() != null) {
+                request.setDeadline(requestFromModerator.getDeadline());
+            }
+        }
+
+        return requestToRequestDto(requestRepository.save(request));
+    }
 
     public void delete(Long id) {
-        requestRepository.delete(findById(id));
+        requestRepository.delete(findRequestById(id));
     }
 
 
 //Additional
-    private Request findById(Long id) {
+    private Department findDepartmentByName(String name) {
+        List<Department> departments = departmentRepository.findAllByName(name);
+
+        if (departments.size() == 0) {
+            throw new NotFoundException();
+        }
+
+        return  departments.get(0);
+    }
+
+    private Request findRequestById(Long id) {
         return requestRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    private Status findStatusById(String id) {
+        return statusRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    private Status findStatusByName(String name) {
+        List<Status> statuses = statusRepository.findAllByName(name);
+
+        if (statuses.size() == 0) {
+            throw new NotFoundException();
+        }
+
+        return  statuses.get(0);
     }
 
     private RequestDto requestToRequestDto(Request request) {
@@ -162,7 +264,7 @@ public class RequestService {
 
         BeanUtils.copyProperties(requestDto, request, "remove", "created", "removed", "department", "author", "performer", "status");
 
-        List<Department> departments = departmentRepository.findByName(requestDto.getDepartment());
+        List<Department> departments = departmentRepository.findAllByName(requestDto.getDepartment());
         if (departments.size() != 0) {
             request.setRequestDepartment(departments.get(0));
         }
@@ -182,4 +284,17 @@ public class RequestService {
         return request;
     }
 
+    private List<RequestDto> requestListToRequestDtoList(List<Request> requests) {
+        List<RequestDto> requestDtos = new ArrayList<>();
+
+        if (requests == null) {
+            return requestDtos;
+        }
+
+        for (Request request :requests) {
+            requestDtos.add(requestToRequestDto(request));
+        }
+
+        return requestDtos;
+    }
 }

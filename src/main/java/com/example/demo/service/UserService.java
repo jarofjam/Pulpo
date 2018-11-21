@@ -77,12 +77,12 @@ public class UserService {
         User user = new User();
 
         BeanUtils.copyProperties(userDto, user, "removed", "created", "department", "managerOfDepartment", "remove");
-        List<Department> departments = departmentRepository.findByName(userDto.getDepartment());
+        List<Department> departments = departmentRepository.findAllByName(userDto.getDepartment());
         if (departments.size() != 0) {
             user.setUserDepartment(departments.get(0));
         }
 
-        departments = departmentRepository.findByName(userDto.getManagerOfDepartment());
+        departments = departmentRepository.findAllByName(userDto.getManagerOfDepartment());
         if (departments.size() != 0) {
             user.setManagerOfDepartment((departments.get(0)));
         }

@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.Request;
 import com.example.demo.dto.RequestDto;
 import com.example.demo.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,43 +13,55 @@ public class RequestController {
     @Autowired
     RequestService requestService;
 
-//Customer
+//Applicant
+    @RequestMapping(value = "/api/applicant/request", method = RequestMethod.GET)
+    public List<RequestDto> findAllByAuthorAndDepartmentAndStatus(
+            @RequestParam(name = "status", required = false, defaultValue = "ALL") String status,
+            @RequestParam(name = "department", required = false, defaultValue = "NONE") String department
+    ) {
+        return requestService.findAllByAuthorAndDepartmentAndStatus(department, status);
+    }
 
-//    @RequestMapping(value = "/api/client/request", method = RequestMethod.GET)
-//    public List<Request> findAllByAuthor(@RequestParam(name="status", required=false, defaultValue="ALL") String status) {
-//        return requestService.findAllByAuthorAndStatus(status);
-//    }
-//
-    @RequestMapping(value = "/api/customer/request", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/applicant/request", method = RequestMethod.POST)
     public RequestDto create(@RequestBody RequestDto requestDto) {
         return requestService.create(requestDto);
     }
-//
-//    @RequestMapping(value = "/api/customer/request/{id}", method = RequestMethod.PUT)
-//    public Request updateByClient(@PathVariable Long id, @RequestBody Request request) {
-//        return requestService.updateByClient(id, request);
-//    }
+
+    @RequestMapping(value = "/api/applicant/request/{id}", method = RequestMethod.PUT)
+    public RequestDto updateByApplicant(@PathVariable Long id, @RequestBody RequestDto requestDto) {
+        return requestService.updateByApplicant(id, requestDto);
+    }
 
 //Performer
-//    @RequestMapping(value = "/api/performer/department/request", method = RequestMethod.GET)
-//    public List<Request> findAllByDepartment() {
-//        return requestService.findAllByPerformerDepartment();
-//    }
+    @RequestMapping(value = "/api/performer/department/request", method = RequestMethod.GET)
+    public List<RequestDto> findAllByPerformerDepartment() {
+        return requestService.findAllByPerformerDepartment();
+    }
 
-//    @RequestMapping(value = "/api/performer/request", method = RequestMethod.GET)
-//    public List<Request> findAllByPerformer() {
-//        return requestService.findAllByPerformer();
-//    }
-//
-//    @RequestMapping(value = "api/performer/request/{id}", method = RequestMethod.PUT)
-//    public Request updatePerformerStatusComment(@PathVariable Long id, @RequestBody Request request) {
-//        return requestService.updatePerformerStatusComment(id, request);
-//    }
+    @RequestMapping(value = "/api/performer/request", method = RequestMethod.GET)
+    public List<RequestDto> findAllByPerformerAndStatus(
+            @RequestParam(name = "status", required = false, defaultValue = "ALL") String status
+    ) {
+        return requestService.findAllByPerformerAndStatus(status);
+    }
+
+    @RequestMapping(value = "api/performer/request/{id}", method = RequestMethod.PUT)
+    public RequestDto updateByPerformer(@PathVariable Long id, @RequestBody RequestDto requestDto) {
+        return requestService.updateByPerformer(id, requestDto);
+    }
 
 //Moderator
     @RequestMapping(value = "/api/moderator/request", method = RequestMethod.GET)
-    public List<RequestDto> findAll() {
-        return requestService.findAll();
+    public List<RequestDto> findAllByDepartmentAndStatus(
+            @RequestParam(name = "status", required = false, defaultValue = "ALL") String status,
+            @RequestParam(name = "department", required = false, defaultValue = "NONE") String department
+    ) {
+        return requestService.findAllByDepartmentAndStatus(department, status);
+    }
+
+    @RequestMapping(value = "api/moderator/request/{id}", method = RequestMethod.PUT)
+    public RequestDto updateByModerator(@PathVariable Long id, @RequestBody RequestDto requestDto) {
+        return requestService.updateByModerator(id, requestDto);
     }
 
     @RequestMapping(value = "/api/moderator/request/{id}", method = RequestMethod.DELETE)

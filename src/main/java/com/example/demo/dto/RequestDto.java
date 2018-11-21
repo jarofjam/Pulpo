@@ -36,4 +36,11 @@ public class RequestDto {
         }
         return this.remove;
     }
+
+    public String getPerformer() {
+        if (this.performer == null) {
+            return "";
+        }
+        return this.performer;
+    }
 }
