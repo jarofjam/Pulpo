@@ -1,60 +1,62 @@
-# Readme is not relevant
 ## Pages
 * / - main page
 * /admin - represents admin features
-* /request - a page to create new requests
-* /client - represents client features
-* /performer - represents performer features
 * /moderator - represents moderator features
+* /performer - represents performer features
+* /client - represents client features
+* /request - a page to create new requests
 * /login - custom login page
 * /registration - temporary mapping; necessary for the application to work on a database without users
  ## API
+ ### Department
+#### api/department
+* Http method GET: to get all departments
+* Http method POST: to create a new department
+#### api/department/{id}
+* Http method GET: to get a department by id
+* Http method PUT: to update a department
+* Http method DELETE: to delete a department
  ### User
 #### api/user
-* Http method GET: to get all records from DB
-* Http method POST: to create new record
+* Http method GET: to get all users
+* Http method POST: to create a new user
 #### api/user/{id}
-* Http method GET: to get a record with certain id from DB
-* Http method PUT: to update a record with certain id in DB
-* Http method DELETE: to remove a record with certain id from DB
-### Role
-#### api/role
-* Http method GET: to get all records from DB
-* Http method POST: to create new record
-#### api/role/{id}
-* Http method GET: to get a record with certain id from DB
-* Http method PUT: to update a record with certain id in DB
-* Http method DELETE: to remove a record with certain id from DB
+* Http method GET: to get a user by id
+* Http method PUT: to update a user
+* Http method DELETE: to delete a user
 ### Status
 #### api/status
-* Http method GET: to get all records from DB
-* Http method POST: to create new record
+* Http method GET: to get all statuses
+* Http method POST: to create a new status
 #### api/status/{id}
-* Http method GET: to get a record with certain id from DB
-* Http method PUT: to update a record with certain id in DB
-* Http method DELETE: to remove a record with certain id from DB
-### Client(allows to process only requests valid for the client)
-#### api/client/request?status={status}
-* Http method GET: to get all requests with defined status and created by a logged in client 
-* Http method POST: to create a new request with logged in user as a client
-#### api/client/request/{id}
-* Http method PUT: to update request description or status field
-### Moderator(allows to process only requests valid for the moderator)
-#### api/moderator/request
-* Http method GET: to get all requests
-#### api/moderator/request/{id}
-* Http method DELETE: to delete a request
-### Performer(allows to process only requests valid for the performer)
-#### api/department/request
-* Http method GET: to get all requests addressed to the department of the currently logged in performer
-#### api/performer/request
-* Http method GET: to get all requests currently logged in performer is assigned for
+* Http method GET: to get a status by id
+* Http method PUT: to update a status
+* Http method DELETE: to delete a status
+### Request by applicant
+#### api/applicant/request[?status={status}&department={department}]
+* Http method GET: to get all requests(or filter them by status and(or) department) which were created by a logged in user 
+* Http method POST: to create a new request with logged in user as an applicant
+#### api/applicant/request/{id}
+* Http method PUT: to update a request(cancel it or change the description field)
+### Request by performer
+#### api/performer/department/request
+* Http method GET: to get all requests addressed to the department of the currently logged in user
+#### api/performer/request[?status={status}]
+* Http method GET: to get all requests currently logged in user is assigned for as a performer(or filter them by status)
 #### api/performer/request/{id}
-* Http method PUT: to update request status, performer and comment fields
+* Http method PUT: to update a request(cancel it, sigh up for it or change the comment filed) 
+### Request by Moderator
+#### api/moderator/request[?status={status}&department={department}]
+* Http method GET: to get all requests(or filter them by status and(or) department) 
+#### api/moderator/request/{id}
+* Http method PUT: to change a request(cancel it or update topic, description, comment or dealine fields)
+* Http method DELETE: to delete a request
+
  ## Database
-### Contains four types of entities - user, role, request and status
-#### For now there are no connection inside the DB
+### Database schema
+![Database schema](images/DB_schema_postgre.png)
  ## UI
+ ### In Progress - some parts may not work
 ### /admin page
 * By default shows lists of all users and roles
 * Provides input forms to create  new users and roles
