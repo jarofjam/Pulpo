@@ -1,54 +1,54 @@
-package com.example.demo.service;
-
-import com.example.demo.domain.Role;
-import com.example.demo.exception.NotFoundException;
-import com.example.demo.repository.RoleRepository;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-@Service
-public class RoleService {
-    private final RoleRepository roleRepository;
-
-    @Autowired
-    public RoleService(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
-
-    public List<Role> findAll() {
-        return roleRepository.findAll();
-    }
-
-//Validate role
-    public Role create(Role role) {
-        role.setCreated(LocalDateTime.now());
-        return roleRepository.save(role);
-    }
-
-//Solve concurrent requests problem
-//Validate role
-    public Role update(Long id, Role role) {
-        Role roleFromDb = findInDbById(id);
-
-        BeanUtils.copyProperties(role, roleFromDb, "id", "created", "removed");
-
-        return roleRepository.save(roleFromDb);
-    }
-
-    public Role read(Long id) {
-        return findInDbById(id);
-    }
-
-    public void delete(Long id) {
-        roleRepository.delete(findInDbById(id));
-    }
-
-    private Role findInDbById(Long id) {
-        Role user = roleRepository.findById(id).orElseThrow(NotFoundException::new);
-        return user;
-    }
-}
+//package com.example.demo.service;
+//
+//import com.example.demo.domain.Role;
+//import com.example.demo.exception.NotFoundException;
+//import com.example.demo.repository.RoleRepository;
+//import org.springframework.beans.BeanUtils;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Service;
+//
+//import java.time.LocalDateTime;
+//import java.util.List;
+//
+//@Service
+//public class RoleService {
+//    private final RoleRepository roleRepository;
+//
+//    @Autowired
+//    public RoleService(RoleRepository roleRepository) {
+//        this.roleRepository = roleRepository;
+//    }
+//
+//    public List<Role> findAll() {
+//        return roleRepository.findAll();
+//    }
+//
+////Validate role
+//    public Role create(Role role) {
+//        role.setCreated(LocalDateTime.now());
+//        return roleRepository.save(role);
+//    }
+//
+////Solve concurrent requests problem
+////Validate role
+//    public Role update(Long id, Role role) {
+//        Role roleFromDb = findInDbById(id);
+//
+//        BeanUtils.copyProperties(role, roleFromDb, "id", "created", "removed");
+//
+//        return roleRepository.save(roleFromDb);
+//    }
+//
+//    public Role read(Long id) {
+//        return findInDbById(id);
+//    }
+//
+//    public void delete(Long id) {
+//        roleRepository.delete(findInDbById(id));
+//    }
+//
+//    private Role findInDbById(Long id) {
+//        Role user = roleRepository.findById(id).orElseThrow(NotFoundException::new);
+//        return user;
+//    }
+//}

@@ -5,20 +5,26 @@ import com.example.demo.domain.Request;
 import com.example.demo.domain.Status;
 import com.example.demo.domain.User;
 import com.example.demo.dto.RequestDto;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ForbiddenException;
 import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.RequestRepository;
 import com.example.demo.repository.StatusRepository;
 import com.example.demo.repository.UserRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
 import org.springframework.stereotype.Service;
+
+import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -41,33 +47,51 @@ public class RequestService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-        User currentUser = userRepository.findByUsername(currentUsername);
+        User currentUser = findUserByUsername(currentUsername);
 
-        Request request = requestDtoToRequest(requestDto);
+    //Check
+        if (currentUser == null) {
+            throw new UnauthorizedException();
+        }
+
+        Request request = requestDtoToRequest(requestDto, new Request());
 
         request.setRequestAuthor(currentUser);
         request.setCreated(LocalDateTime.now());
-        request.setRequestStatus(findStatusById("CHECKED"));
+        request.setRequestStatus(findStatusByName("CHECKED"));
 
-        return requestToRequestDto(requestRepository.save(request));
+        return requestToRequestDto(requestRepository.save(validate(request)));
     }
 
     public RequestDto updateByApplicant(Long id, RequestDto requestDto) {
-
         Request request = findRequestById(id);
 
+    //Check permission
+        if (request.getRemoved() != null) {
+            return requestToRequestDto(request);
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User currentUser = findUserByUsername(currentUsername);
+
+        if (request.getRequestAuthor() != null && request.getRequestAuthor().getId() != currentUser.getId()) {
+            throw new ForbiddenException();
+        }
+
+    //Update
         if (requestDto.getRemove()) {
-            request.setRequestStatus(findStatusById("CANCELED"));
+            request.setRequestStatus(findStatusByName("CANCELED"));
             request.setRemoved(LocalDateTime.now());
             request.setCancelInfo("by applicant");
         } else {
-            Request requestFromApplicant = requestDtoToRequest(requestDto);
+            Request requestFromApplicant = requestDtoToRequest(requestDto, new Request());
             if (requestFromApplicant.getDescription() != null) {
                 request.setDescription(requestFromApplicant.getDescription());
             }
         }
 
-        return requestToRequestDto(requestRepository.save(request));
+        return requestToRequestDto(requestRepository.save(validate(request)));
     }
 
     public List<RequestDto> findAllByAuthorAndDepartmentAndStatus(String departmentName, String statusName) {
@@ -77,17 +101,17 @@ public class RequestService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-        User currentUser = userRepository.findByUsername(currentUsername);
+        User currentUser = findUserByUsername(currentUsername);
 
         if("ALL".equals(statusName)) {
-            if ("NONE".equals(departmentName)) {
+            if ("ALL".equals(departmentName)) {
                 requests = requestRepository.findAllByRequestAuthor(currentUser);
             } else {
                 department = findDepartmentByName(departmentName);
                 requests = requestRepository.findAllByRequestAuthorAndRequestDepartment(currentUser, department);
             }
         } else {
-            if ("NONE".equals(departmentName)) {
+            if ("ALL".equals(departmentName)) {
                 status = findStatusByName(statusName);
                 requests = requestRepository.findAllByRequestAuthorAndRequestStatus(currentUser, status);
             } else {
@@ -104,7 +128,7 @@ public class RequestService {
     public List<RequestDto> findAllByPerformerDepartment() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-        User currentUser = userRepository.findByUsername(currentUsername);
+        User currentUser = findUserByUsername(currentUsername);
 
         return requestListToRequestDtoList(requestRepository.findAllByRequestDepartment(currentUser.getUserDepartment()));
     }
@@ -115,9 +139,9 @@ public class RequestService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-        User currentUser = userRepository.findByUsername(currentUsername);
+        User currentUser = findUserByUsername(currentUsername);
 
-        if ("NONE".equals(statusName)) {
+        if ("ALL".equals(statusName)) {
             requests = requestRepository.findAllByRequestPerformer(currentUser);
         } else {
             status = findStatusByName(statusName);
@@ -130,25 +154,37 @@ public class RequestService {
     public RequestDto updateByPerformer(Long id, RequestDto requestDto) {
         Request request = findRequestById(id);
 
+    //Check permission
+        if (request.getRemoved() != null) {
+            return requestToRequestDto(request);
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-        User currentUser = userRepository.findByUsername(currentUsername);
+        User currentUser = findUserByUsername(currentUsername);
 
+        if (request.getRequestPerformer() != null && request.getRequestPerformer().getId() != currentUser.getId()) {
+            throw new ForbiddenException();
+        }
 
+        if (request.getRequestDepartment() != null && request.getRequestDepartment().getId() != currentUser.getUserDepartment().getId()) {
+            throw new ForbiddenException();
+        }
+
+    //Update
         if (requestDto.getRemove()) {
-            request.setRequestStatus(findStatusById("CANCELED"));
+            request.setRequestStatus(findStatusByName("CANCELED"));
             request.setRemoved(LocalDateTime.now());
             request.setCancelInfo("by performer");
-        } else if ("signUp".equals(requestDto.getPerformer())) {
-            request.setRequestPerformer(currentUser);
         } else {
-            Request requestFromPerformer = requestDtoToRequest(requestDto);
+            Request requestFromPerformer = requestDtoToRequest(requestDto, new Request());
             if (requestFromPerformer.getComment() != null) {
                 request.setComment(requestFromPerformer.getComment());
             }
         }
 
-        return requestToRequestDto(requestRepository.save(request));
+        request.setRequestPerformer(currentUser);
+        return requestToRequestDto(requestRepository.save(validate(request)));
     }
 
 //Moderator
@@ -158,14 +194,14 @@ public class RequestService {
         Status status;
 
         if("ALL".equals(statusName)) {
-            if ("NONE".equals(departmentName)) {
+            if ("ALL".equals(departmentName)) {
                 requests = requestRepository.findAll();
             } else {
                 department = findDepartmentByName(departmentName);
                 requests = requestRepository.findAllByRequestDepartment(department);
             }
         } else {
-            if ("NONE".equals(departmentName)) {
+            if ("ALL".equals(departmentName)) {
                 status = findStatusByName(statusName);
                 requests = requestRepository.findAllByRequestStatus(status);
             } else {
@@ -181,12 +217,22 @@ public class RequestService {
     public RequestDto updateByModerator(Long id, RequestDto requestDto) {
         Request request = findRequestById(id);
 
+    //Check permission
+        if (request.getRemoved() != null) {
+            return requestToRequestDto(request);
+        }
+
+    //Update
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User currentUser = findUserByUsername(currentUsername);
+
         if (requestDto.getRemove()) {
-            request.setRequestStatus(findStatusById("CANCELED"));
+            request.setRequestStatus(findStatusByName("CANCELED"));
             request.setRemoved(LocalDateTime.now());
             request.setCancelInfo("by moderator");
         } else {
-            Request requestFromModerator = requestDtoToRequest(requestDto);
+            Request requestFromModerator = requestDtoToRequest(requestDto, new Request());
 
             if (requestFromModerator.getTopic() != null) {
                 request.setTopic(requestFromModerator.getTopic());
@@ -202,47 +248,34 @@ public class RequestService {
             }
         }
 
-        return requestToRequestDto(requestRepository.save(request));
+        request.setRequestModerator(currentUser);
+        return requestToRequestDto(requestRepository.save(validate(request)));
     }
 
     public void delete(Long id) {
         requestRepository.delete(findRequestById(id));
     }
 
-
 //Additional
     private Department findDepartmentByName(String name) {
-        List<Department> departments = departmentRepository.findAllByName(name);
+        return departmentRepository.findByName(name);
+    }
 
-        if (departments.size() == 0) {
-            throw new NotFoundException();
-        }
-
-        return  departments.get(0);
+    private User findUserByUsername(String userName) {
+        return userRepository.findByUsername(userName);
     }
 
     private Request findRequestById(Long id) {
         return requestRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
-    private Status findStatusById(String id) {
-        return statusRepository.findById(id).orElseThrow(NotFoundException::new);
-    }
-
     private Status findStatusByName(String name) {
-        List<Status> statuses = statusRepository.findAllByName(name);
-
-        if (statuses.size() == 0) {
-            throw new NotFoundException();
-        }
-
-        return  statuses.get(0);
+        return statusRepository.findByName(name);
     }
 
-    private RequestDto requestToRequestDto(Request request) {
-        RequestDto requestDto = new RequestDto();
+    private RequestDto requestToRequestDto(@NotNull Request request) {
+        RequestDto requestDto = GeneralMethods.convert(request, new RequestDto(), Arrays.asList("requestDepartment", "requestAuthor", "requestPerformer", "requestModerator", "requestStatus"));
 
-        BeanUtils.copyProperties(request, requestDto, "requestDepartment", "requestAuthor", "requestPerformer", "requestStatus");
         if (request.getRequestDepartment() != null) {
             requestDto.setDepartment(request.getRequestDepartment().getName());
         }
@@ -252,6 +285,9 @@ public class RequestService {
         if (request.getRequestPerformer() != null) {
             requestDto.setPerformer(request.getRequestPerformer().getRealName());
         }
+        if (request.getRequestModerator() != null) {
+            requestDto.setModerator(request.getRequestModerator().getRealName());
+        }
         if (request.getRequestStatus() != null) {
             requestDto.setStatus(request.getRequestStatus().getName());
         }
@@ -259,26 +295,33 @@ public class RequestService {
         return requestDto;
     }
 
-    private Request requestDtoToRequest(RequestDto requestDto) {
-        Request request = new Request();
+    private Request requestDtoToRequest(@NotNull RequestDto requestDto, Request request) {
+        request = GeneralMethods.convert(requestDto, request, Arrays.asList("id", "created", "removed", "remove", "department", "status", "author", "performer", "moderator"));
 
-        BeanUtils.copyProperties(requestDto, request, "remove", "created", "removed", "department", "author", "performer", "status");
+        Department department;
+        Status status;
 
-        List<Department> departments = departmentRepository.findAllByName(requestDto.getDepartment());
-        if (departments.size() != 0) {
-            request.setRequestDepartment(departments.get(0));
+        String departmentName;
+        String statusName;
+
+        departmentName = requestDto.getDepartment();
+        if (departmentName != null) {
+            department = findDepartmentByName(departmentName);
+            if (department == null || department.getRemoved() != null) {
+                throw new BadRequestException();
+            } else {
+                request.setRequestDepartment(department);
+            }
         }
-        List<User> users = userRepository.findByRealName(requestDto.getAuthor());
-        if (users.size() != 0) {
-            request.setRequestAuthor(users.get(0));
-        }
-        users = userRepository.findByRealName(requestDto.getPerformer());
-        if (users.size() != 0) {
-            request.setRequestPerformer(users.get(0));
-        }
-        List<Status> statuses = statusRepository.findAllByName(requestDto.getStatus());
-        if (statuses.size() != 0) {
-            request.setRequestStatus(statuses.get(0));
+
+        statusName = requestDto.getStatus();
+        if (statusName != null) {
+            status = statusRepository.findByName(statusName);
+            if (status == null || status.getRemoved() != null) {
+                throw new BadRequestException();
+            } else {
+                request.setRequestStatus(status);
+            }
         }
 
         return request;
@@ -296,5 +339,18 @@ public class RequestService {
         }
 
         return requestDtos;
+    }
+
+    private Request validate(@NotNull Request request) {
+        if (request.getTopic() == null ||
+            request.getDescription() == null ||
+            request.getRequestAuthor() == null ||
+            request.getRequestStatus() == null ||
+            request.getRequestDepartment() == null
+        ) {
+            throw new BadRequestException();
+        }
+
+        return request;
     }
 }

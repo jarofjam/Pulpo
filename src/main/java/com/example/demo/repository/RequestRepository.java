@@ -10,9 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
-//Client
+//Applicant
     List<Request> findAllByRequestAuthor(User requestAuthor);
-//    @Query("SELECT r FROM Request r WHERE r.client=?1 AND r.status=?2")
     List<Request> findAllByRequestAuthorAndRequestStatus(User requestAuthor, Status requestStatus);
     List<Request> findAllByRequestAuthorAndRequestDepartment(User requestAuthor, Department requestDepartment);
     List<Request> findAllByRequestAuthorAndRequestDepartmentAndRequestStatus(User requestAuthor, Department requestDepartment, Status requestStatus);
@@ -20,7 +19,6 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 //Performer
     List<Request> findAllByRequestPerformer(User requestPerformer);
     List<Request> findAllByRequestPerformerAndRequestStatus(User requestPerformer, Status requestStatus);
-//    @Query("SELECT r FROM Request r WHERE r.department=?1 AND r.performer=NULL")
     List<Request> findAllByRequestDepartment(Department requestDepartment);
 
 //Moderator

@@ -28,6 +28,7 @@ public class User {
     //and here comes this little buddy
     private Integer a;
 
+    @Column(unique = true)
     private String username;
     private String password;
 
@@ -46,4 +47,7 @@ public class User {
 
     @OneToMany(mappedBy = "requestPerformer")
     private List<Request> requestsPerformer;
+
+    @OneToMany(mappedBy = "requestModerator")
+    private List<Request> requestsModerator;
 }

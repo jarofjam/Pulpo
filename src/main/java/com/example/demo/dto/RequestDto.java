@@ -26,6 +26,7 @@ public class RequestDto {
     private String department;
     private String author;
     private String performer;
+    private String moderator;
     private String status;
 
     private Boolean remove;
@@ -35,12 +36,5 @@ public class RequestDto {
             return false;
         }
         return this.remove;
-    }
-
-    public String getPerformer() {
-        if (this.performer == null) {
-            return "";
-        }
-        return this.performer;
     }
 }

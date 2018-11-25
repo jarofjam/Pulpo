@@ -1,36 +1,26 @@
 
-var requestApi = Vue.resource('/api/client/request');
+var requestApi = Vue.resource('/api/applicant/request');
+
+Vue.component('department', {
+
+});
 
 Vue.component('department-list', {
     props: ['set_department'],
     template:
         '<div class="block" style="width: 200px; position: fixed;">' +
-            '<p>Выберите отдел</p><hr/>' +
-            '<div class="department" v-on:click="CR">Бухгалтерия</div>' +
-            '<div class="department" v-on:click="IT">IT</div>' +
-            '<div class="department" v-on:click="HR">Отдел кадров</div>' +
-            '<div class="department" v-on:click="AD">Администрация</div>' +
+            '<p>Choose department</p><hr/>' +
+            '<template v-for="department in departments"/>' +
         '</div>',
-    methods: {
-        CR: function() {
-            this.set_department('Бухгалтерия');
-        },
-        IT: function() {
-            this.set_department('IT');
-        },
-        HR: function() {
-            this.set_department('Отдел кадров');
-        },
-        AD: function() {
-            this.set_department('Администрация');
-        }
+    created: function() {
+
     }
 });
 
 Vue.component('template-preview', {
     props: ['i'],
     template:
-        '<p class="template_button">Типовая заявка <b>#{{ i }}</b></p>',
+        '<p class="template_button">Typical request<b>#{{ i }}</b></p>'
 
 });
 
@@ -45,7 +35,7 @@ Vue.component('template-list', {
                     '<template-preview class="template_button" :i="i" />' +
                 '</template>' +
                 '<hr/>' +
-                '<p class="template_button" v-on:click="new_request">Создать новую заявку</p>' +
+                '<p class="template_button" v-on:click="new_request">Create new request</p>' +
             '</div>' +
         '</div>',
     methods: {
@@ -62,17 +52,17 @@ Vue.component('request-form', {
             message: '',
             topic: '',
             description: '',
-            comment: 'Комментарий отсутствует'
+            comment: 'No comment'
         }
     },
     template:
         '<div v-if="form" class="block" style="width: 450px; text-align: left; position: fixed; left: 670px;">' +
-            '<p>Форма заявки</p><hr/>' +
+            '<p>Request form</p><hr/>' +
             '<template v-if="form.type === \'new\' ">' +
                 '<p><b>Отдел: </b>{{ department }}</p>' +
                 '<b>Тема: </b><input style="width: 300px;" type="text" v-model="topic" />' +
                 '<p><b>Детали заявки: </b></p><textarea cols="50" rows="12" v-model="description"></textarea>' +
-                '<div class="button" style="width: 110px;" v-on:click="create">Создать заявку</div>' +
+                '<div class="button" style="width: 110px;" v-on:click="create">Create new request</div>' +
                 '{{ this.message }}' +
             '</template>' +
             '<template v-else>' +
@@ -94,7 +84,7 @@ Vue.component('request-form', {
                 requestApi.save({}, request);
 
             } else {
-                this.message = 'Заполните все поля';
+                this.message = 'Please, complete the form';
             }
         }
     }
@@ -106,7 +96,7 @@ var request = new Vue({
         '<div>' +
             '<div v-if="display === \'hide\'">' +
                 '<p>Заявка успешно создана</p>' +
-                '<div class="button" style="width: 150px;" v-on:click="show">Создать новую заявку</div>' +
+                '<div class="button" style="width: 150px;" v-on:click="show">Create new request</div>' +
             '</div>'  +
             '<div v-if="display === \'show\'" style="text-align: center;">' +
                 '<department-list :department="department" :set_department="set_department" />' +

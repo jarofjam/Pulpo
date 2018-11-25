@@ -14,15 +14,17 @@ import java.util.List;
 @NoArgsConstructor
 public class Status {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @Column(updatable =false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime removed;
-
+    @Column(unique = true)
     private String name;
+    private String description;
 
     @OneToMany(mappedBy = "requestStatus")
     List<Request> requests;

@@ -22,6 +22,7 @@ public class Department {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime removed;
 
+    @Column(unique = true)
     private String name;
     private String description;
 

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class StatusDto {
-    private String id;
+    private Long id;
 
     @Column(updatable =false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -19,6 +19,7 @@ public class StatusDto {
     private LocalDateTime removed;
 
     private String name;
+    private String description;
 
     private Boolean remove;
 

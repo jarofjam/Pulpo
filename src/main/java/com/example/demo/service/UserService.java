@@ -3,17 +3,19 @@ package com.example.demo.service;
 import com.example.demo.domain.Department;
 import com.example.demo.domain.User;
 import com.example.demo.dto.UserDto;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.UserRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -39,61 +41,82 @@ public class UserService {
     }
 
     public UserDto create(UserDto userDto) {
-        User user = userDtoToUser(userDto);
+        User user = userDtoToUser(userDto, new User());
 
         user.setCreated(LocalDateTime.now());
         user.setActive(true);
 
-        return userToUserDto(userRepository.save(user));
+        return userToUserDto(userRepository.save(validate(user)));
     }
 
     public UserDto read(Long id) {
-        return userToUserDto(findById(id));
+        return userToUserDto(findUserById(id));
     }
 
     public UserDto update(Long id, UserDto userDto) {
-        User user = findById(id);
-        userDto.setId(id);
-
-        if (userDto.getRemove()) {
-            user.setRemoved(LocalDateTime.now());
-            userDto.setRemoved(LocalDateTime.now());
-        } else {
-            user = userDtoToUser(userDto);
+        User user = findUserById(id);
+//Check
+        if (user.getRemoved() != null) {
+            return userToUserDto(user);
         }
 
-        return userToUserDto(userRepository.save(user));
+//Update
+        if (userDto.getRemove()) {
+            user.setRemoved(LocalDateTime.now());
+            user.setActive(false);
+        } else {
+            user = userDtoToUser(userDto, user);
+            user.setActive(true);
+        }
+
+        return userToUserDto(userRepository.save(validate(user)));
     }
 
     public void delete(Long id) {
-        userRepository.delete(findById(id));
+        userRepository.delete(findUserById(id));
     }
 
-    private User findById(Long id) {
+    private User findUserById(Long id) {
         return userRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
-    private User userDtoToUser(UserDto userDto) {
-        User user = new User();
+    private User findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 
-        BeanUtils.copyProperties(userDto, user, "removed", "created", "department", "managerOfDepartment", "remove");
-        List<Department> departments = departmentRepository.findAllByName(userDto.getDepartment());
-        if (departments.size() != 0) {
-            user.setUserDepartment(departments.get(0));
+    private User userDtoToUser(@NotNull UserDto userDto, User user) {
+        user = GeneralMethods.convert(userDto, user, Arrays.asList("id", "removed", "created", "department", "managerOfDepartment", "remove"));
+
+        Department department;
+        String departmentName;
+
+        departmentName = userDto.getDepartment();
+        if (departmentName != null) {
+            department = departmentRepository.findByName(departmentName);
+            if (department == null || department.getRemoved() != null) {
+                throw new BadRequestException();
+            } else {
+                user.setUserDepartment(department);
+            }
         }
 
-        departments = departmentRepository.findAllByName(userDto.getManagerOfDepartment());
-        if (departments.size() != 0) {
-            user.setManagerOfDepartment((departments.get(0)));
+        departmentName = userDto.getManagerOfDepartment();
+        if (departmentName != null) {
+            department = departmentRepository.findByName(departmentName);
+            if (department == null || department.getRemoved() != null) {
+                throw new BadRequestException();
+            } else {
+                user.setManagerOfDepartment(department);
+            }
         }
 
         return user;
     }
 
-    private UserDto userToUserDto(User user) {
-        UserDto userDto = new UserDto();
+    private UserDto userToUserDto(@NotNull User user) {
 
-        BeanUtils.copyProperties(user, userDto, "userDepartment", "managerOfDepartment", "active", "a", "requestsAuthor", "requestsPerformer");
+        UserDto userDto = GeneralMethods.convert(user, new UserDto(), Arrays.asList("userDepartment", "managerOfDepartment", "active", "a", "requestsAuthor", "requestsPerformer", "requestsModerator"));
+
         if (user.getUserDepartment() != null) {
             userDto.setDepartment(user.getUserDepartment().getName());
         }
@@ -102,5 +125,19 @@ public class UserService {
         }
 
         return userDto;
+    }
+
+    private User validate(User user) {
+        if (user.getUsername() == null || user.getPassword() == null) {
+            throw new BadRequestException();
+        }
+
+        User userFromDb = findUserByUsername(user.getUsername());
+
+        if (userFromDb != null && userFromDb.getId() != user.getId()) {
+            throw new BadRequestException();
+        }
+
+        return user;
     }
 }

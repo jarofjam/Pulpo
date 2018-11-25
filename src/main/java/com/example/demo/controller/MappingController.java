@@ -58,13 +58,6 @@ public class MappingController {
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String addUser(User user, Map<String, Object> model) {
-        User userFromDb = userRepository.findByUsername(user.getUsername());
-
-        if (userFromDb != null) {
-            model.put("message", "Username already exists");
-            return "registration";
-        }
-
         user.setCreated(LocalDateTime.now());
         user.setActive(true);
         userRepository.save(user);

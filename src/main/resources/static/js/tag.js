@@ -16,7 +16,7 @@ Vue.component('tag-name', {
    props: ['tag'],
    template:
        '<div>' +
-            '{{ tag.name }} ({{ tag.parent }})' +
+            '{{ tag.name }}' +
        '</div>'
 });
 
@@ -24,25 +24,22 @@ Vue.component('tag-form', {
     props:['tags'],
     data: function() {
         return {
-            name: '',
-            parent: ''
+            name: ''
         }
     },
     template:
         '<div>' +
             '<input type="text" placeholder="Tag name" v-model="name" />' +
-            '<input type="text" placeholder="Tag parent" v-model="parent" />' +
             '<input type="button" value="Add" v-on:click="save" />' +
         '</div>',
     methods: {
         save: function () {
-            var tag = [this.name, this.parent];
+            var tag = this.name;
 
             tagApi.save(tag).then(result =>
                 result.json().then(data => {
                     this.tags.push(data);
                     this.name = '';
-                    this.parent = '';
                 })
             )
         }

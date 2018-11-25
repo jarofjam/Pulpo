@@ -20,7 +20,7 @@ public class StatusController {
     }
 
     @RequestMapping(value = "/api/status/{id}", method = RequestMethod.GET)
-    public StatusDto read(@PathVariable String id) {
+    public StatusDto read(@PathVariable Long id) {
         return statusService.read(id);
     }
 
@@ -30,12 +30,12 @@ public class StatusController {
     }
 
     @RequestMapping(value = "/api/status/{id}", method = RequestMethod.PUT)
-    public StatusDto update(@PathVariable String id, @RequestBody StatusDto statusDto) {
+    public StatusDto update(@PathVariable Long id, @RequestBody StatusDto statusDto) {
         return statusService.update(id, statusDto);
     }
 
     @RequestMapping(value = "/api/status/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable String id) {
+    public void delete(@PathVariable Long id) {
         statusService.delete(id);
     }
 }

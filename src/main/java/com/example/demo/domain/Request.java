@@ -29,16 +29,20 @@ public class Request {
     private String cancelInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID_AUTHOR")
-    private User requestAuthor;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DEPARTMENT_ID")
     private Department requestDepartment;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID_AUTHOR")
+    private User requestAuthor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID_PERFORMER")
     private User requestPerformer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID_MODERATOR")
+    private User requestModerator;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STATUS_ID")

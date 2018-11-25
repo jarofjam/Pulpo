@@ -17,7 +17,7 @@ public class RequestController {
     @RequestMapping(value = "/api/applicant/request", method = RequestMethod.GET)
     public List<RequestDto> findAllByAuthorAndDepartmentAndStatus(
             @RequestParam(name = "status", required = false, defaultValue = "ALL") String status,
-            @RequestParam(name = "department", required = false, defaultValue = "NONE") String department
+            @RequestParam(name = "department", required = false, defaultValue = "ALL") String department
     ) {
         return requestService.findAllByAuthorAndDepartmentAndStatus(department, status);
     }
@@ -54,7 +54,7 @@ public class RequestController {
     @RequestMapping(value = "/api/moderator/request", method = RequestMethod.GET)
     public List<RequestDto> findAllByDepartmentAndStatus(
             @RequestParam(name = "status", required = false, defaultValue = "ALL") String status,
-            @RequestParam(name = "department", required = false, defaultValue = "NONE") String department
+            @RequestParam(name = "department", required = false, defaultValue = "ALL") String department
     ) {
         return requestService.findAllByDepartmentAndStatus(department, status);
     }

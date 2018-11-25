@@ -1,20 +1,25 @@
 package com.example.demo.domain;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.NodeEntity;
-
-import javax.persistence.GenerationType;
+import lombok.*;
+import org.neo4j.ogm.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NodeEntity
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class Tag {
-    @GraphId
+    @Id
+    @GeneratedValue
     private Long id;
 
     private String name;
-    private String parent;
-    private Integer tier;
+
+    @Relationship(type = "MEETS")
+    private List<Tag> tagsFromMe = new ArrayList<>();
+
+    @Relationship(type = "MEETS", direction = Relationship.INCOMING)
+    private List<Tag> tagsToMe = new ArrayList<>();
+
 }
