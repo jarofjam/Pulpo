@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.Role;
 import com.example.demo.domain.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Map;
 
 @Controller
@@ -36,9 +38,9 @@ public class MappingController {
         return "performer";
     }
 
-    @RequestMapping(value = "/client", method = RequestMethod.GET)
-    public String client() {
-        return "client";
+    @RequestMapping(value = "/applicant", method = RequestMethod.GET)
+    public String applicant() {
+        return "applicant";
     }
 
     @RequestMapping(value = "/request", method = RequestMethod.GET)
@@ -60,8 +62,8 @@ public class MappingController {
     public String addUser(User user, Map<String, Object> model) {
         user.setCreated(LocalDateTime.now());
         user.setActive(true);
+        user.setRoles(Collections.singleton(Role.ADMIN));
         userRepository.save(user);
-
         return "redirect:/login";
     }
 }

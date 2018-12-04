@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Department;
+import com.example.demo.domain.Role;
 import com.example.demo.domain.User;
 import com.example.demo.dto.UserDto;
 import com.example.demo.exception.BadRequestException;
@@ -8,17 +9,18 @@ import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.UserRepository;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
@@ -85,11 +87,12 @@ public class UserService {
     }
 
     private User userDtoToUser(@NotNull UserDto userDto, User user) {
-        user = GeneralMethods.convert(userDto, user, Arrays.asList("id", "removed", "created", "department", "managerOfDepartment", "remove"));
+        user = GeneralMethods.convert(userDto, user, Arrays.asList("id", "removed", "created", "department", "managerOfDepartment", "remove", "roles"));
 
         Department department;
         String departmentName;
 
+//Set user department
         departmentName = userDto.getDepartment();
         if (departmentName != null) {
             department = departmentRepository.findByName(departmentName);
@@ -99,7 +102,7 @@ public class UserService {
                 user.setUserDepartment(department);
             }
         }
-
+//Set manager of department
         departmentName = userDto.getManagerOfDepartment();
         if (departmentName != null) {
             department = departmentRepository.findByName(departmentName);
@@ -109,26 +112,60 @@ public class UserService {
                 user.setManagerOfDepartment(department);
             }
         }
+//Set roles
+        if (userDto.getRoles() != null) {
+            Set<Role> oldRoles = user.getRoles();
+            Set<Role> newRoles = new HashSet<>();
+
+            Set<String> allowedRoles = Arrays.stream(Role.values())
+                    .map(Role::name)
+                    .collect(Collectors.toSet());
+
+            for (String role :userDto.getRoles()) {
+                if (allowedRoles.contains(role)) {
+                    newRoles.add(Role.valueOf(role));
+                }
+            }
+
+            if (newRoles.size() != 0) {
+                user.setRoles(newRoles);
+            } else {
+                user.setRoles(oldRoles);
+            }
+        }
 
         return user;
     }
 
     private UserDto userToUserDto(@NotNull User user) {
 
-        UserDto userDto = GeneralMethods.convert(user, new UserDto(), Arrays.asList("userDepartment", "managerOfDepartment", "active", "a", "requestsAuthor", "requestsPerformer", "requestsModerator"));
+        UserDto userDto = GeneralMethods.convert(user, new UserDto(), Arrays.asList("userDepartment", "managerOfDepartment", "active", "requestsAuthor", "requestsPerformer", "requestsModerator", "roles"));
 
+//Set user department
         if (user.getUserDepartment() != null) {
             userDto.setDepartment(user.getUserDepartment().getName());
         }
+//Set manager of department
         if (user.getManagerOfDepartment() != null) {
             userDto.setManagerOfDepartment(user.getManagerOfDepartment().getName());
         }
+//Set roles
+        List<String> listRoles = new ArrayList<>();
+
+        for (Role role :user.getRoles()) {
+            listRoles.add(role.name());
+        }
+        userDto.setRoles(listRoles);
 
         return userDto;
     }
 
     private User validate(User user) {
         if (user.getUsername() == null || user.getPassword() == null) {
+            throw new BadRequestException();
+        }
+
+        if (user.getRoles() == null || user.getRoles().size() == 0) {
             throw new BadRequestException();
         }
 
@@ -139,5 +176,10 @@ public class UserService {
         }
 
         return user;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username);
     }
 }

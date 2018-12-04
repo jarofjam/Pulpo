@@ -1,14 +1,15 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.Department;
 import com.example.demo.dto.DepartmentDto;
 import com.example.demo.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasAuthority('ADMIN')")
 public class DepartmentController {
 
     @Autowired

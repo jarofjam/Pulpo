@@ -4,11 +4,13 @@ import com.example.demo.domain.User;
 import com.example.demo.dto.UserDto;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
 
     @Autowired

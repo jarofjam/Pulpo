@@ -1,10 +1,13 @@
 package com.example.demo.dto;
 
+import com.example.demo.domain.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,6 +27,7 @@ public class UserDto {
     private String department;
     private String managerOfDepartment;
     private Boolean remove;
+    private List<String> roles;
 
     public Boolean getRemove() {
         if (this.remove == null) {

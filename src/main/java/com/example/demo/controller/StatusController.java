@@ -4,11 +4,13 @@ import com.example.demo.domain.Status;
 import com.example.demo.dto.StatusDto;
 import com.example.demo.service.StatusService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasAuthority('ADMIN')")
 public class StatusController {
 
     @Autowired
