@@ -35,7 +35,8 @@ public class RequestService {
     private final DepartmentRepository departmentRepository;
     private final StatusRepository statusRepository;
 
-    @Autowired RequestService(RequestRepository requestRepository, UserRepository userRepository, DepartmentRepository departmentRepository, StatusRepository statusRepository) {
+    @Autowired
+    RequestService(RequestRepository requestRepository, UserRepository userRepository, DepartmentRepository departmentRepository, StatusRepository statusRepository) {
         this.requestRepository = requestRepository;
         this.userRepository = userRepository;
         this.departmentRepository = departmentRepository;
@@ -44,12 +45,11 @@ public class RequestService {
 
 //Applicant
     public RequestDto create(RequestDto requestDto) {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         User currentUser = findUserByUsername(currentUsername);
 
-    //Check
+        //Check
         if (currentUser == null) {
             throw new UnauthorizedException();
         }
@@ -58,7 +58,7 @@ public class RequestService {
 
         request.setRequestAuthor(currentUser);
         request.setCreated(LocalDateTime.now());
-        request.setRequestStatus(findStatusByName("CHECKED"));
+        request.setRequestStatus(findStatusByName("NEW"));
 
         return requestToRequestDto(requestRepository.save(validate(request)));
     }
@@ -66,7 +66,7 @@ public class RequestService {
     public RequestDto updateByApplicant(Long id, RequestDto requestDto) {
         Request request = findRequestById(id);
 
-    //Check permission
+        //Check permission
         if (request.getRemoved() != null) {
             return requestToRequestDto(request);
         }
@@ -79,7 +79,7 @@ public class RequestService {
             throw new ForbiddenException();
         }
 
-    //Update
+        //Update
         if (requestDto.getRemove()) {
             request.setRequestStatus(findStatusByName("CANCELED"));
             request.setRemoved(LocalDateTime.now());
@@ -154,7 +154,7 @@ public class RequestService {
     public RequestDto updateByPerformer(Long id, RequestDto requestDto) {
         Request request = findRequestById(id);
 
-    //Check permission
+        //Check permission
         if (request.getRemoved() != null) {
             return requestToRequestDto(request);
         }
@@ -171,7 +171,7 @@ public class RequestService {
             throw new ForbiddenException();
         }
 
-    //Update
+        //Update
         if (requestDto.getRemove()) {
             request.setRequestStatus(findStatusByName("CANCELED"));
             request.setRemoved(LocalDateTime.now());
@@ -180,6 +180,16 @@ public class RequestService {
             Request requestFromPerformer = requestDtoToRequest(requestDto, new Request());
             if (requestFromPerformer.getComment() != null) {
                 request.setComment(requestFromPerformer.getComment());
+            }
+            //Update status
+            if ("invalid".equals(requestDto.getStatus())) {
+                request.setRequestStatus(findStatusByName("INVALID"));
+            }
+            if ("finished".equals(requestDto.getStatus())) {
+                request.setRequestStatus(findStatusByName("FINISHED"));
+            }
+            if ("ongoing".equals((requestDto.getStatus()))) {
+                request.setRequestStatus(findStatusByName("ONGOING"));
             }
         }
 
@@ -217,12 +227,12 @@ public class RequestService {
     public RequestDto updateByModerator(Long id, RequestDto requestDto) {
         Request request = findRequestById(id);
 
-    //Check permission
+        //Check permission
         if (request.getRemoved() != null) {
             return requestToRequestDto(request);
         }
 
-    //Update
+        //Update
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         User currentUser = findUserByUsername(currentUsername);
@@ -245,6 +255,13 @@ public class RequestService {
             }
             if (requestFromModerator.getDeadline() != null) {
                 request.setDeadline(requestFromModerator.getDeadline());
+            }
+            //Update status
+            if ("checked".equals(requestDto.getStatus())) {
+                request.setRequestStatus(findStatusByName("CHECKED"));
+            }
+            if ("invalid".equals(requestDto.getStatus())) {
+                request.setRequestStatus(findStatusByName("INVALID"));
             }
         }
 
@@ -296,7 +313,7 @@ public class RequestService {
     }
 
     private Request requestDtoToRequest(@NotNull RequestDto requestDto, Request request) {
-        request = GeneralMethods.convert(requestDto, request, Arrays.asList("id", "created", "removed", "remove", "department", "status", "author", "performer", "moderator"));
+        request = GeneralMethods.convert(requestDto, request, Arrays.asList("id", "created", "removed", "remove", "department", "status", "author", "performer", "moderator", "action"));
 
         Department department;
         Status status;

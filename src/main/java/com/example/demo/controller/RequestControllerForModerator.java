@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @PreAuthorize("hasAuthority('MODERATOR')")
-public class RequestAsModeratorController {
+public class RequestControllerForModerator {
     @Autowired
     RequestService requestService;
 

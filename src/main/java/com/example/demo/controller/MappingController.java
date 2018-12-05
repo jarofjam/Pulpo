@@ -48,11 +48,6 @@ public class MappingController {
         return "request";
     }
 
-    @RequestMapping(value = "/tag", method = RequestMethod.GET)
-    public String tag() {
-        return "tag";
-    }
-
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration() {
         return "registration";

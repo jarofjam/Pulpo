@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.RequestDto;
-import com.example.demo.repository.RequestRepository;
 import com.example.demo.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@PreAuthorize("hasAuthority('USER')")
-public class RequestAsApplicantController {
+@PreAuthorize("hasAuthority('APPLICANT')")
+public class RequestControllerForApplicant {
     @Autowired
     RequestService requestService;
 

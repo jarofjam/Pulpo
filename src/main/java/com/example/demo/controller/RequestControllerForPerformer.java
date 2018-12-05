@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @PreAuthorize("hasAuthority('PERFORMER')")
-public class RequestAsPerformerController {
+public class RequestControllerForPerformer {
     @Autowired
     RequestService requestService;
 
