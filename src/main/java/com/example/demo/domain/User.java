@@ -49,6 +49,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "requestAuthor")
     private List<Request> requestsAuthor;
 
+    @OneToMany(mappedBy = "templateAuthor")
+    private List<Template> templatesAuthor;
+
     @OneToMany(mappedBy = "requestPerformer")
     private List<Request> requestsPerformer;
 

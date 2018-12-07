@@ -17,7 +17,6 @@ import java.util.*;
 
 @Service
 public class StatusService {
-
     private final StatusRepository statusRepository;
 
     @Autowired

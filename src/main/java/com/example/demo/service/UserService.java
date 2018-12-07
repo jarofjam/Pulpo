@@ -5,6 +5,7 @@ import com.example.demo.domain.Role;
 import com.example.demo.domain.User;
 import com.example.demo.dto.UserDto;
 import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ForbiddenException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.UserRepository;
@@ -59,7 +60,7 @@ public class UserService implements UserDetailsService {
         User user = findUserById(id);
 //Check
         if (user.getRemoved() != null) {
-            return userToUserDto(user);
+            throw new ForbiddenException();
         }
 
 //Update
@@ -139,7 +140,7 @@ public class UserService implements UserDetailsService {
 
     private UserDto userToUserDto(@NotNull User user) {
 
-        UserDto userDto = GeneralMethods.convert(user, new UserDto(), Arrays.asList("userDepartment", "managerOfDepartment", "active", "requestsAuthor", "requestsPerformer", "requestsModerator", "roles"));
+        UserDto userDto = GeneralMethods.convert(user, new UserDto(), Arrays.asList("userDepartment", "managerOfDepartment", "active", "requestsAuthor", "templatesAuthor", "requestsPerformer", "requestsModerator", "roles"));
 
 //Set user department
         if (user.getUserDepartment() != null) {

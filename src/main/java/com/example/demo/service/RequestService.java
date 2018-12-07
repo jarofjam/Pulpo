@@ -68,7 +68,7 @@ public class RequestService {
 
         //Check permission
         if (request.getRemoved() != null) {
-            return requestToRequestDto(request);
+            throw new ForbiddenException();
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -156,7 +156,7 @@ public class RequestService {
 
         //Check permission
         if (request.getRemoved() != null) {
-            return requestToRequestDto(request);
+            throw new ForbiddenException();
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -229,7 +229,7 @@ public class RequestService {
 
         //Check permission
         if (request.getRemoved() != null) {
-            return requestToRequestDto(request);
+            throw new ForbiddenException();
         }
 
         //Update

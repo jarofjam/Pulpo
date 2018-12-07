@@ -1,8 +1,7 @@
 package com.example.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,7 +9,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "request_status")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Status {
     @Id
