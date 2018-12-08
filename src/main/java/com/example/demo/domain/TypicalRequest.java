@@ -1,19 +1,24 @@
 package com.example.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "user_request")
-@Data
+@Table(name = "requests_from_template")
+@Getter
+@Setter
 @NoArgsConstructor
-public class Request {
+public class TypicalRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private long id;
+
     @Column(updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
@@ -22,31 +27,29 @@ public class Request {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime finished;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime deadline;
-
-    private String topic;
-    private String description;
     private String comment;
     private String cancelInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DEPARTMENT_ID")
-    private Department requestDepartment;
+    @JoinColumn(name = "template_id_request")
+    private Template requestTemplate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID_AUTHOR")
-    private User requestAuthor;
+    @JoinColumn(name = "user_id_author")
+    private User typicalRequestAuthor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID_PERFORMER")
-    private User requestPerformer;
+    @JoinColumn(name = "user_id_performer")
+    private User typicalRequestPerformer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID_MODERATOR")
-    private User requestModerator;
+    @JoinColumn(name = "user_id_moderator")
+    private User typicalRequestModerator;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "STATUS_ID")
-    private Status requestStatus;
+    @JoinColumn(name = "status_id")
+    private Status typicalRequestStatus;
+
+    @OneToMany(mappedBy = "valueTypicalRequest")
+    private List<Value> values;
 }

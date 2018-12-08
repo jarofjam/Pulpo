@@ -21,7 +21,7 @@ public class RequestControllerForPerformer {
 
     @RequestMapping(value = "/api/performer/request", method = RequestMethod.GET)
     public List<RequestDto> findAllByPerformerAndStatus(
-            @RequestParam(name = "status", required = false, defaultValue = "ALL") String status
+            @RequestParam(name = "status", required = false, defaultValue = "All") String status
     ) {
         return requestService.findAllByPerformerAndStatus(status);
     }

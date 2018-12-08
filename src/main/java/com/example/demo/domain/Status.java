@@ -28,4 +28,7 @@ public class Status {
 
     @OneToMany(mappedBy = "requestStatus")
     List<Request> requests;
+
+    @OneToMany(mappedBy = "typicalRequestStatus")
+    List<TypicalRequest> typicalRequests;
 }

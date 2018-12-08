@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@PreAuthorize("hasAuthority('ADMIN')")
+@PreAuthorize("hasAuthority('MODERATOR')")
 public class TemplateController {
     @Autowired
     private TemplateService templateService;

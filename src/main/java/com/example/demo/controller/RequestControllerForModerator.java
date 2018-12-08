@@ -16,8 +16,8 @@ public class RequestControllerForModerator {
 
     @RequestMapping(value = "/api/moderator/request", method = RequestMethod.GET)
     public List<RequestDto> findAllByDepartmentAndStatus(
-            @RequestParam(name = "status", required = false, defaultValue = "ALL") String status,
-            @RequestParam(name = "department", required = false, defaultValue = "ALL") String department
+            @RequestParam(name = "status", required = false, defaultValue = "All") String status,
+            @RequestParam(name = "department", required = false, defaultValue = "All") String department
     ) {
         return requestService.findAllByDepartmentAndStatus(department, status);
     }

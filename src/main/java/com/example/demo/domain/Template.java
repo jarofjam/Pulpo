@@ -3,7 +3,6 @@ package com.example.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -24,6 +23,8 @@ public class Template {
     private LocalDateTime created;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime removed;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime deadline;
 
     private String topic;
     private String text;
@@ -38,4 +39,7 @@ public class Template {
 
     @OneToMany(mappedBy = "attributeTemplate")
     private List<Attribute> attributes;
+
+    @OneToMany(mappedBy = "requestTemplate")
+    private List<TypicalRequest> requests;
 }

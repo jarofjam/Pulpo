@@ -58,7 +58,7 @@ public class RequestService {
 
         request.setRequestAuthor(currentUser);
         request.setCreated(LocalDateTime.now());
-        request.setRequestStatus(findStatusByName("NEW"));
+        request.setRequestStatus(findStatusByName("New"));
 
         return requestToRequestDto(requestRepository.save(validate(request)));
     }
@@ -81,7 +81,7 @@ public class RequestService {
 
         //Update
         if (requestDto.getRemove()) {
-            request.setRequestStatus(findStatusByName("CANCELED"));
+            request.setRequestStatus(findStatusByName("Canceled"));
             request.setRemoved(LocalDateTime.now());
             request.setCancelInfo("by applicant");
         } else {
@@ -103,15 +103,15 @@ public class RequestService {
         String currentUsername = authentication.getName();
         User currentUser = findUserByUsername(currentUsername);
 
-        if("ALL".equals(statusName)) {
-            if ("ALL".equals(departmentName)) {
+        if("All".equals(statusName)) {
+            if ("All".equals(departmentName)) {
                 requests = requestRepository.findAllByRequestAuthor(currentUser);
             } else {
                 department = findDepartmentByName(departmentName);
                 requests = requestRepository.findAllByRequestAuthorAndRequestDepartment(currentUser, department);
             }
         } else {
-            if ("ALL".equals(departmentName)) {
+            if ("All".equals(departmentName)) {
                 status = findStatusByName(statusName);
                 requests = requestRepository.findAllByRequestAuthorAndRequestStatus(currentUser, status);
             } else {
@@ -141,7 +141,7 @@ public class RequestService {
         String currentUsername = authentication.getName();
         User currentUser = findUserByUsername(currentUsername);
 
-        if ("ALL".equals(statusName)) {
+        if ("All".equals(statusName)) {
             requests = requestRepository.findAllByRequestPerformer(currentUser);
         } else {
             status = findStatusByName(statusName);
@@ -173,23 +173,24 @@ public class RequestService {
 
         //Update
         if (requestDto.getRemove()) {
-            request.setRequestStatus(findStatusByName("CANCELED"));
+            request.setRequestStatus(findStatusByName("Canceled"));
             request.setRemoved(LocalDateTime.now());
             request.setCancelInfo("by performer");
+            request.setRequestPerformer(currentUser);
         } else {
             Request requestFromPerformer = requestDtoToRequest(requestDto, new Request());
             if (requestFromPerformer.getComment() != null) {
                 request.setComment(requestFromPerformer.getComment());
             }
             //Update status
-            if ("invalid".equals(requestDto.getStatus())) {
-                request.setRequestStatus(findStatusByName("INVALID"));
+            if ("Invalid".equals(requestDto.getStatus())) {
+                request.setRequestStatus(findStatusByName("Invalid"));
             }
-            if ("finished".equals(requestDto.getStatus())) {
-                request.setRequestStatus(findStatusByName("FINISHED"));
+            if ("Finished".equals(requestDto.getStatus())) {
+                request.setRequestStatus(findStatusByName("Finished"));
             }
-            if ("ongoing".equals((requestDto.getStatus()))) {
-                request.setRequestStatus(findStatusByName("ONGOING"));
+            if ("Ongoing".equals((requestDto.getStatus()))) {
+                request.setRequestStatus(findStatusByName("Ongoing"));
             }
         }
 
@@ -203,15 +204,15 @@ public class RequestService {
         Department department;
         Status status;
 
-        if("ALL".equals(statusName)) {
-            if ("ALL".equals(departmentName)) {
+        if("All".equals(statusName)) {
+            if ("All".equals(departmentName)) {
                 requests = requestRepository.findAll();
             } else {
                 department = findDepartmentByName(departmentName);
                 requests = requestRepository.findAllByRequestDepartment(department);
             }
         } else {
-            if ("ALL".equals(departmentName)) {
+            if ("All".equals(departmentName)) {
                 status = findStatusByName(statusName);
                 requests = requestRepository.findAllByRequestStatus(status);
             } else {
@@ -238,17 +239,15 @@ public class RequestService {
         User currentUser = findUserByUsername(currentUsername);
 
         if (requestDto.getRemove()) {
-            request.setRequestStatus(findStatusByName("CANCELED"));
+            request.setRequestStatus(findStatusByName("Canceled"));
             request.setRemoved(LocalDateTime.now());
             request.setCancelInfo("by moderator");
+            request.setRequestModerator(currentUser);
         } else {
             Request requestFromModerator = requestDtoToRequest(requestDto, new Request());
 
             if (requestFromModerator.getTopic() != null) {
                 request.setTopic(requestFromModerator.getTopic());
-            }
-            if (requestFromModerator.getDescription() != null) {
-                request.setDescription(requestFromModerator.getDescription());
             }
             if (requestFromModerator.getComment() != null) {
                 request.setComment(requestFromModerator.getComment());
@@ -257,11 +256,11 @@ public class RequestService {
                 request.setDeadline(requestFromModerator.getDeadline());
             }
             //Update status
-            if ("checked".equals(requestDto.getStatus())) {
-                request.setRequestStatus(findStatusByName("CHECKED"));
+            if ("Checked".equals(requestDto.getStatus())) {
+                request.setRequestStatus(findStatusByName("Checked"));
             }
-            if ("invalid".equals(requestDto.getStatus())) {
-                request.setRequestStatus(findStatusByName("INVALID"));
+            if ("Invalid".equals(requestDto.getStatus())) {
+                request.setRequestStatus(findStatusByName("Invalid"));
             }
         }
 
@@ -313,7 +312,7 @@ public class RequestService {
     }
 
     private Request requestDtoToRequest(@NotNull RequestDto requestDto, Request request) {
-        request = GeneralMethods.convert(requestDto, request, Arrays.asList("id", "created", "removed", "remove", "department", "status", "author", "performer", "moderator", "action"));
+        request = GeneralMethods.convert(requestDto, request, Arrays.asList("id", "created", "removed", "finished", "remove", "department", "status", "author", "performer", "moderator", "action"));
 
         Department department;
         Status status;

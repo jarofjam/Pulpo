@@ -140,7 +140,7 @@ public class UserService implements UserDetailsService {
 
     private UserDto userToUserDto(@NotNull User user) {
 
-        UserDto userDto = GeneralMethods.convert(user, new UserDto(), Arrays.asList("userDepartment", "managerOfDepartment", "active", "requestsAuthor", "templatesAuthor", "requestsPerformer", "requestsModerator", "roles"));
+        UserDto userDto = GeneralMethods.convert(user, new UserDto(), Arrays.asList("userDepartment", "managerOfDepartment", "active", "requestsAuthor", "requestsFromTemplateAuthor", "templatesAuthor", "requestsPerformer", "requestsFromTemplatePerformer", "requestsModerator", "requestsFromTemplateModerator", "roles"));
 
 //Set user department
         if (user.getUserDepartment() != null) {

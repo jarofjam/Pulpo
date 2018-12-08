@@ -83,7 +83,7 @@ public class TemplateService {
     }
 
     private TemplateDto templateToTemplateDto(@NotNull Template template) {
-        TemplateDto templateDto = GeneralMethods.convert(template, new TemplateDto(), Arrays.asList("attributes", "author", "department"));
+        TemplateDto templateDto = GeneralMethods.convert(template, new TemplateDto(), Arrays.asList("attributes", "author", "department", "requests"));
 
         List<Map<String, String>> attributes = new ArrayList<>();
 
@@ -98,6 +98,7 @@ public class TemplateService {
             Map<String, String> attr = new HashMap<>();
             attr.put("name", attribute.getName());
             attr.put("placeholder", attribute.getPlaceholder());
+            attr.put("id", String.valueOf(attribute.getId()));
             attributes.add(attr);
         }
         templateDto.setAttributes(attributes);

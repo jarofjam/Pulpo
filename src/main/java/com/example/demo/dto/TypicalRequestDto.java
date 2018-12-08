@@ -5,10 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
-public class RequestDto {
+public class TypicalRequestDto {
     private Long id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
@@ -16,20 +18,22 @@ public class RequestDto {
     private LocalDateTime removed;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime finished;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime deadline;
 
-    private String topic;
-    private String description;
     private String comment;
     private String cancelInfo;
 
-    private String department;
+    private String topic;
+    private String text;
     private String author;
     private String performer;
     private String moderator;
     private String status;
+    private Long template;
+
+    private List<Map<String, String>> values;
+    private List<Map<String, String>> attributes;
 
     private Boolean remove;
 

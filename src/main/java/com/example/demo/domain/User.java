@@ -52,11 +52,20 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "templateAuthor")
     private List<Template> templatesAuthor;
 
+    @OneToMany(mappedBy = "typicalRequestAuthor")
+    private List<TypicalRequest> typicalRequestsAuthor;
+
     @OneToMany(mappedBy = "requestPerformer")
     private List<Request> requestsPerformer;
 
+    @OneToMany(mappedBy = "typicalRequestPerformer")
+    private List<TypicalRequest> typicalRequestsPerformer;
+
     @OneToMany(mappedBy = "requestModerator")
     private List<Request> requestsModerator;
+
+    @OneToMany(mappedBy = "typicalRequestModerator")
+    private List<TypicalRequest> typicalRequestsModerator;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

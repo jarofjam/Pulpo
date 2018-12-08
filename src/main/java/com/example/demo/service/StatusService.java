@@ -82,7 +82,7 @@ public class StatusService {
     }
 
     private StatusDto statusToStatusDto(@NotNull Status status) {
-        return GeneralMethods.convert(status, new StatusDto(), Arrays.asList("requests"));
+        return GeneralMethods.convert(status, new StatusDto(), Arrays.asList("requests", "requestsFromTemplate"));
     }
 
     private Status validate(@NotNull Status status) {

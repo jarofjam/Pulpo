@@ -16,8 +16,8 @@ public class RequestControllerForApplicant {
 
     @RequestMapping(value = "/api/applicant/request", method = RequestMethod.GET)
     public List<RequestDto> findAllByAuthorAndDepartmentAndStatus(
-            @RequestParam(name = "status", required = false, defaultValue = "ALL") String status,
-            @RequestParam(name = "department", required = false, defaultValue = "ALL") String department
+            @RequestParam(name = "status", required = false, defaultValue = "All") String status,
+            @RequestParam(name = "department", required = false, defaultValue = "All") String department
     ) {
         return requestService.findAllByAuthorAndDepartmentAndStatus(department, status);
     }
