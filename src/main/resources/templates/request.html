@@ -2,21 +2,18 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Title</title>
+        <title>Create new request</title>
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
         <link rel="stylesheet" href="/css/request.css">
     </head>
 
     <body>
-        <div>
-            <a href="/">To main page</a>
-        </div>
-        <form th:action="@{/logout}" method="post">
+        <form th:action="@{/logout}" method="post" style="float: right">
             <input type="submit" value="Sign Out"/>
         </form>
         <div>
-            Create new request
+            <a href="/">To main page</a>
         </div>
         <div id="request"></div>
         <script src="/js/request.js"></script>

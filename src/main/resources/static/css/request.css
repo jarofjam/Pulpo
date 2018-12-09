@@ -1,29 +1,32 @@
-.block{
+#department_buttons,
+#template_buttons,
+#request_form {
+    text-align: center;
+    width: 250px;
+    border-right: 1px solid #C0C0C0;
+    padding-right: 10px;
+    padding-left: 10px;
     float: left;
-    padding: 20px;
-    margin: 3px;
-    transition: 300ms;
-    border-left: 1px solid grey;
 }
 
-.block:nth-child(1) {
-    border-left: none;
+#request_form {
+    width: 500px;
+    border-right: none;
+    text-align: left;
 }
 
-.department,
-.template_button,
-.button {
+.department_button,
+.template_button {
     cursor: pointer;
     background-color: #D3D3D3;
     margin: 5px;
     padding: 10px;
-    transition: 300ms;
     border-radius: 3px;
+    transition: 300ms;
 }
 
-.department:hover,
-.template_button:hover,
-.button:hover{
+.department_button:hover,
+.template_button:hover {
     background-color: #C0C0C0;
-    transition: 300ms;
+    transition: 300ms
 }

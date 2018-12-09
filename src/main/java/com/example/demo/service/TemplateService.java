@@ -49,9 +49,16 @@ public class TemplateService {
         templateDtoToTemplate(templateDto, template);
     }
 
-    public List<TemplateDto> findAll() {
+    public List<TemplateDto> findAllByDepartment(String departmentName) {
         List<TemplateDto> templateDtos = new ArrayList<>();
-        List<Template> templates = templateRepository.findAll();
+        List<Template> templates = new ArrayList<>();
+
+        if ("All".equals(departmentName)) {
+            templates = templateRepository.findAll();
+        } else {
+            Department department = findDepartmentByName(departmentName);
+            templates = templateRepository.findAllByTemplateDepartment(department);
+        }
 
         for (Template template :templates) {
             templateDtos.add(templateToTemplateDto(template));

@@ -23,25 +23,25 @@ public class MappingController {
         return "index";
     }
 
-    @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public String admin() {
-        return "admin";
-    }
-
-    @RequestMapping(value = "/moderator", method = RequestMethod.GET)
-    public String moderator() {
-        return "moderator";
-    }
-
-    @RequestMapping(value = "/performer", method = RequestMethod.GET)
-    public String performer() {
-        return "performer";
-    }
-
-    @RequestMapping(value = "/applicant", method = RequestMethod.GET)
-    public String applicant() {
-        return "applicant";
-    }
+//    @RequestMapping(value = "/admin", method = RequestMethod.GET)
+//    public String admin() {
+//        return "admin";
+//    }
+//
+//    @RequestMapping(value = "/moderator", method = RequestMethod.GET)
+//    public String moderator() {
+//        return "moderator";
+//    }
+//
+//    @RequestMapping(value = "/performer", method = RequestMethod.GET)
+//    public String performer() {
+//        return "performer";
+//    }
+//
+//    @RequestMapping(value = "/applicant", method = RequestMethod.GET)
+//    public String applicant() {
+//        return "applicant";
+//    }
 
     @RequestMapping(value = "/request", method = RequestMethod.GET)
     public String request() {

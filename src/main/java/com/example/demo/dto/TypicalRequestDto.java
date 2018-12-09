@@ -18,8 +18,8 @@ public class TypicalRequestDto {
     private LocalDateTime removed;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime finished;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime deadline;
+
+    private Long duration;
 
     private String comment;
     private String cancelInfo;
@@ -30,6 +30,8 @@ public class TypicalRequestDto {
     private String performer;
     private String moderator;
     private String status;
+    private String department;
+
     private Long template;
 
     private List<Map<String, String>> values;

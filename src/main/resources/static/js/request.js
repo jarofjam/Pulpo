@@ -1,90 +1,254 @@
 
+function findAttrById(list, id) {
+    for (var i = 0; i < list.length; i++) {
+        if (list[i].id === id) {
+            return list[i];
+        }
+    }
+    return null;
+}
+
+function findValueIndexByAttributeId(list, id) {
+    for (var i = 0; i < list.length; i++) {
+        if (list[i].attr_id === id) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+var templateApi = Vue.resource('/api/applicant/template?department={department}');
+var departmentApi = Vue.resource('/api/department');
 var requestApi = Vue.resource('/api/applicant/request');
+var typicalRequestApi = Vue.resource('/api/applicant/typicalrequest');
 
-Vue.component('department', {
-
-});
-
-Vue.component('department-list', {
-    props: ['set_department'],
-    template:
-        '<div class="block" style="width: 200px; position: fixed;">' +
-            '<p>Choose department</p><hr/>' +
-            '<template v-for="department in departments"/>' +
-        '</div>',
-    created: function() {
-
+//Departments
+Vue.component('department-button', {
+   props:['department', 'choose_department'],
+   template:
+       '<div :title="department.description" v-on:click="choose" class="department_button">' +
+            '{{ department.name }}' +
+       '</div>',
+    methods: {
+       choose: function() {
+           this.choose_department(this.department);
+       }
     }
 });
 
-Vue.component('template-preview', {
-    props: ['i'],
+Vue.component('department-buttons', {
+    props: ['departments', 'choose_department'],
     template:
-        '<p class="template_button">Typical request<b>#{{ i }}</b></p>'
-
+        '<div>' +
+            '<p>Choose department</p>' +
+            '<hr/>' +
+            '<div v-if="departments.length !== 0">' +
+                '<department-button ' +
+                        'v-for="department in departments" :key="department.id" ' +
+                        ':department="department" ' +
+                        ':choose_department="choose_department"' +
+                '/>' +
+            '</div>' +
+            '<div v-else>' +
+                'No department found' +
+            '</div>' +
+        '</div>'
 });
 
-Vue.component('template-list', {
-    props: ['department', 'set_template'],
+//Templates
+Vue.component('template-button', {
+    props: ['template', 'choose_template'],
     template:
-        '<div v-if="department" class="block" style="width: 370px; margin-left: 250px;">' +
-            '<p><b>{{ department }}</b><br/>' +
-                '</p><hr/>' +
-            '<div>' +
-                '<template v-for="i in 15">' +
-                    '<template-preview class="template_button" :i="i" />' +
-                '</template>' +
+        '<div v-on:click="choose" class="template_button">' +
+            '{{ template.topic }}' +
+            '<template v-if="template.duration">' +
                 '<hr/>' +
-                '<p class="template_button" v-on:click="new_request">Create new request</p>' +
-            '</div>' +
+                'approximate duration: {{template.duration}}' +
+            '</template>' +
         '</div>',
     methods: {
-        new_request: function() {
-            this.set_template({type: 'new'})
+        choose: function() {
+            this.choose_template(true, this.template);
         }
     }
 });
 
-Vue.component('request-form', {
-    props: ['form', 'department', 'hide'],
+Vue.component('template-buttons', {
+    props: ['department', 'choose_template'],
     data: function() {
         return {
-            message: '',
-            topic: '',
-            description: '',
-            comment: 'No comment'
+            templates: []
+        }
+    },
+    watch: {
+        department: function(newState, oldState) {
+            this.templates = [];
+            templateApi.get({department: newState.name}).then(
+                result => result.json().then(
+                    data => data.forEach(template => this.templates.push(template))
+                )
+            );
         }
     },
     template:
-        '<div v-if="form" class="block" style="width: 450px; text-align: left; position: fixed; left: 670px;">' +
-            '<p>Request form</p><hr/>' +
-            '<template v-if="form.type === \'new\' ">' +
-                '<p><b>Отдел: </b>{{ department }}</p>' +
-                '<b>Тема: </b><input style="width: 300px;" type="text" v-model="topic" />' +
-                '<p><b>Детали заявки: </b></p><textarea cols="50" rows="12" v-model="description"></textarea>' +
-                '<div class="button" style="width: 110px;" v-on:click="create">Create new request</div>' +
-                '{{ this.message }}' +
-            '</template>' +
-            '<template v-else>' +
-                //Later
-            '</template>' +
+        '<div v-if="department">' +
+            '<p>{{ department.name }}</p>' +
+            '<hr/>' +
+            'templates:' +
+            '<div v-if="this.templates.length !== 0">' +
+                '<template-button ' +
+                    'v-for="template in templates" :key="template.id" ' +
+                    ':template="template" ' +
+                    ':choose_template="choose_template" ' +
+                '/>' +
+            '</div>' +
+            '<div v-else>' +
+                'No templates found' +
+            '</div>' +
+            '<hr/>' +
+            '<div class="template_button" v-on:click="choose">Create new request</div>' +
         '</div>',
     methods: {
-        create: function() {
-            if (this.topic && this.description) {
-                this.hide();
+        choose: function() {
+            this.choose_template(false, 42);
+        }
+    }
+});
 
-                var request = {
-                    topic: this.topic,
-                    description: this.description,
-                    department: this.department,
-                    comment: this.comment
-                };
+//Typical Request
+Vue.component('text-part', {
+    props: ['text', 'attributes', 'add_value'],
+    data: function() {
+        return {
+            attr: null,
+            value: ''
+        }
+    },
+    template:
+        '<span>' +
+            '<template v-if="this.attr">' +
+                '<input :placeholder=this.attr.placeholder v-model="value" v-on:change="change"/>' +
+            '</template>' +
+            '<template v-else>' +
+                '{{ text }}' +
+            '</template>' +
+        '</span>',
+    created: function() {
+        this.attr = findAttrById(this.attributes, this.text);
+    },
+    methods: {
+        change: function() {
+            this.add_value(this.attr.id, this.value)
+        }
+    }
+});
 
-                requestApi.save({}, request);
+Vue.component('typical-request-form', {
+    props: ['template', 'submit_request'],
+    data: function() {
+        return {
+            values: [],
+            text_parts: []
+        }
+    },
+    watch: {
+        template: function(newState, oldState) {
+            this.text_parts = newState.text.split('$');
+            for (var i = 0, j = 0; i < this.text_parts.length; i++) {
+                if (i % 2 !== 0) {
+                    this.text_parts[i] = newState.attributes[j].id;
+                    j++;
+                }
+            };
 
-            } else {
-                this.message = 'Please, complete the form';
+            this.values = [];
+            for (var i = 0; i < newState.attributes.length; i++) {
+                this.values.push({attr_id: newState.attributes[i].id, value: ''});
+            }
+        }
+    },
+    created: function() {
+        this.text_parts = this.template.text.split('$');
+        for (var i = 0, j = 0; i < this.text_parts.length; i++) {
+            if (i % 2 !== 0) {
+                this.text_parts[i] = this.template.attributes[j].id;
+                j++;
+            }
+        };
+
+        this.values = [];
+        for (var i = 0; i < this.template.attributes.length; i++) {
+            this.values.push({attr_id: this.template.attributes[i].id, value: ''});
+        }
+    },
+    template:
+        '<div v-if="template">' +
+            '<p style="text-align: center">Request</p>' +
+            '<hr/>' +
+            '<p><b>Topic: </b>{{ template.topic }}</p>' +
+            '<p>Please, fill in the gaps</p>' +
+            '<div>' +
+                '<text-part ' +
+                    'v-for="part in text_parts" :key="part" ' +
+                    ':text="part" :attributes="template.attributes" ' +
+                    ':add_value="add_value"' +
+                '/>' +
+            '</div>' +
+            '<div v-if="template.duration">' +
+                'Approximate duration {{ template.duration }}' +
+            '</div>' +
+            '<hr/>' +
+            '<input type="button" value="Create request" v-on:click="save"/>' +
+        '</div>',
+    methods: {
+        add_value: function(attr_id, value) {
+            var index = findValueIndexByAttributeId(this.values, attr_id);
+            this.values[index].value = value;
+        },
+        save: function() {
+            var typicalRequest = {
+                template: this.template.id,
+                values: this.values
+            };
+
+            typicalRequestApi.save({}, typicalRequest).then(
+                result => {if (result.ok) {this.submit_request()}}
+            );
+        }
+    }
+});
+
+//Request
+Vue.component('request-form', {
+    props: ['department', 'submit_request'],
+    data: function() {
+        return {
+            topic: null,
+            description: null
+        }
+    },
+    template:
+        '<div>' +
+            '<p style="text-align: center">Request</p>' +
+            '<hr/>' +
+            'Department: {{ department.name }}' +
+            '<p>Topic: <input type="text" v-model="topic" /></p>' +
+            'Decription: <textarea v-model="description"></textarea> '+
+            '<hr/>' +
+            '<input type="button" value="Create request" v-on:click="save" />' +
+        '</div>',
+    methods: {
+        save: function() {
+            var request = {
+                department: this.department.name,
+                topic: this.topic,
+                description: this.description
+            };
+
+            if (this.department != null && this.topic != null && this.description != null) {
+                requestApi.save({}, request).then(
+                    result => {if (result.ok) {this.submit_request()}}
+                )
             }
         }
     }
@@ -94,37 +258,74 @@ var request = new Vue({
     el: '#request',
     template:
         '<div>' +
-            '<div v-if="display === \'hide\'">' +
-                '<p>Заявка успешно создана</p>' +
-                '<div class="button" style="width: 150px;" v-on:click="show">Create new request</div>' +
-            '</div>'  +
-            '<div v-if="display === \'show\'" style="text-align: center;">' +
-                '<department-list :department="department" :set_department="set_department" />' +
-                '<template-list :department="department" :set_template="set_template" />' +
-                '<request-form :form="form" :department="department" :hide="hide"/>' +
+            '<div v-if="!this.created">' +
+                '<div id="department_buttons">' +
+                    '<department-buttons ' +
+                        ':departments="departments" ' +
+                        ':choose_department="choose_department"' +
+                    '/>' +
+                '</div>' +
+                '<div id="template_buttons">' +
+                    '<template-buttons ' +
+                        ':department="chosen_department" ' +
+                        ':choose_template="choose_template"' +
+                    '/>' +
+                '</div>' +
+                '<div id="request_form">' +
+                    '<div v-if="this.chosen_template">' +
+                        '<div v-if="this.template_based">' +
+                            '<typical-request-form ' +
+                                ':template="chosen_template" ' +
+                                ':submit_request="submit_request"' +
+                            '/>' +
+                        '</div>' +
+                        '<div v-else>' +
+                            '<request-form ' +
+                                ':department="chosen_department" ' +
+                                ':submit_request="submit_request" ' +
+                            '/>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div v-else>' +
+                '<div>Request was created</div>' +
+                '<input type="button" value="Create new request" v-on:click="create_another" />' +
             '</div>' +
         '</div>',
     data: function() {
         return {
-            department: '',
-            form: null,
-            display: 'show'
+            departments: [],
+            templates: [],
+            chosen_department: null,
+            chosen_template: null,
+            created: false,
+            template_based: null
         }
     },
     methods: {
-        set_department: function(department) {
-            this.department = department;
+        choose_department: function(department) {
+            this.chosen_department = department;
+            this.chosen_template = null;
         },
-        set_template: function(form) {
-            this.form = form;
+        choose_template: function (template_based, template) {
+            this.template_based = template_based;
+            this.chosen_template = template;
         },
-        hide: function() {
-            this.display = 'hide';
+        submit_request: function() {
+            this.created = true;
         },
-        show: function () {
-            this.display = 'show';
-            this.department = '';
-            this.form = null;
+        create_another: function() {
+            this.created = false;
+            this.chosen_template = null;
+            this.chosen_department = null;
         }
+    },
+    created: function() {
+        departmentApi.get().then(
+            result => result.json().then(
+                data => data.forEach(department => this.departments.push(department))
+            )
+        );
     }
 });

@@ -10,26 +10,28 @@ import java.util.List;
 
 @RestController
 @PreAuthorize("hasAuthority('MODERATOR')")
-public class TemplateController {
+public class TemplateControllerForModerator {
     @Autowired
     private TemplateService templateService;
 
-    @RequestMapping(value = "/api/template", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/moderator/template", method = RequestMethod.POST)
     public void create(@RequestBody TemplateDto templateDto) {
         templateService.create(templateDto);
     }
 
     @RequestMapping(value = "/api/template", method = RequestMethod.GET)
-    public List<TemplateDto> findAll() {
-        return templateService.findAll();
+    public List<TemplateDto> findAllByDepartment(
+            @RequestParam(name = "department", required = false, defaultValue = "All") String department
+    ) {
+        return templateService.findAllByDepartment(department);
     }
 
-    @RequestMapping(value = "/api/template/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/api/moderator/template/{id}", method = RequestMethod.PUT)
     public void update(@PathVariable Long id, @RequestBody TemplateDto templateDto) {
         templateService.update(id, templateDto);
     }
 
-    @RequestMapping(value = "/api/template/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/api/moderator/template/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable Long id) {
         templateService.delete(id);
     }

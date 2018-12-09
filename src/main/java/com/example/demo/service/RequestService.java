@@ -50,9 +50,6 @@ public class RequestService {
         User currentUser = findUserByUsername(currentUsername);
 
         //Check
-        if (currentUser == null) {
-            throw new UnauthorizedException();
-        }
 
         Request request = requestDtoToRequest(requestDto, new Request());
 

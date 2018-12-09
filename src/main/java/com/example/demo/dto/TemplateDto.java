@@ -18,6 +18,8 @@ public class TemplateDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime removed;
 
+    private Long duration;
+
     private String topic;
     private String text;
     private Boolean remove;

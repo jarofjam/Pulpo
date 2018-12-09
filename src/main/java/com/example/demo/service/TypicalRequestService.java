@@ -50,6 +50,7 @@ public class TypicalRequestService {
 //Applicant
     public void create(TypicalRequestDto typicalRequestDto) {
         TypicalRequest typicalRequest = new TypicalRequest();
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         User currentUser = findUserByUsername(currentUsername);
@@ -328,20 +329,11 @@ public class TypicalRequestService {
         List<Value> oldValues = typicalRequest.getValues();
         List<Value> newValues = new ArrayList<>();
 
-        if (typicalRequestDto.getValues() != null) {
-            if (
-                    typicalRequestDto.getAttributes() == null ||
-                    typicalRequestDto.getAttributes().size() != typicalRequestDto.getValues().size()
-            ) {
-                throw new BadRequestException();
-            }
-        }
-
         typicalRequestRepository.save(validate(typicalRequest));
 
         for (int i = 0; i < typicalRequestDto.getValues().size(); i++) {
             Value value = new Value();
-            Attribute attribute = findAttributeById(Long.parseLong(typicalRequestDto.getAttributes().get(i).get("id")));
+            Attribute attribute = findAttributeById(Long.parseLong(typicalRequestDto.getValues().get(i).get("attr_id")));
 
             value.setValue(typicalRequestDto.getValues().get(i).get("value"));
             value.setValueTypicalRequest(typicalRequest);
@@ -370,7 +362,9 @@ public class TypicalRequestService {
         if (typicalRequest.getRequestTemplate() != null) {
             typicalRequestDto.setTopic(typicalRequest.getRequestTemplate().getTopic());
             typicalRequestDto.setText(typicalRequest.getRequestTemplate().getText());
-            typicalRequestDto.setDeadline(typicalRequest.getRequestTemplate().getDeadline());
+            typicalRequestDto.setDuration(typicalRequest.getRequestTemplate().getDuration());
+            typicalRequestDto.setDepartment(typicalRequest.getRequestTemplate().getTemplateDepartment().getName());
+
             typicalRequestDto.setTemplate(typicalRequest.getRequestTemplate().getId());
         }
 
