@@ -259,7 +259,7 @@ public class TypicalRequestService {
 
         typicalRequest.setTypicalRequestModerator(currentUser);
 
-        if (typicalRequestDto.getRemove()) {
+        if (typicalRequestDto.getRemove() || "Canceled".equals(typicalRequestDto.getStatus())) {
             typicalRequest.setRemoved(LocalDateTime.now());
             typicalRequest.setTypicalRequestStatus(findStatusByName("Canceled"));
             typicalRequest.setCancelInfo("by moderator");

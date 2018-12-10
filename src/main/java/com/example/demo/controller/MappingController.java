@@ -27,11 +27,11 @@ public class MappingController {
 //    public String admin() {
 //        return "admin";
 //    }
-//
-//    @RequestMapping(value = "/moderator", method = RequestMethod.GET)
-//    public String moderator() {
-//        return "moderator";
-//    }
+
+    @RequestMapping(value = "/moderator", method = RequestMethod.GET)
+    public String moderator() {
+        return "moderator";
+    }
 //
 //    @RequestMapping(value = "/performer", method = RequestMethod.GET)
 //    public String performer() {

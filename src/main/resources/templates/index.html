@@ -6,8 +6,14 @@
     </head>
     <body>
         Hola
+        <form th:action="@{/logout}" method="post" style="float: right">
+            <input type="submit" value="Sign Out"/>
+        </form>
         <div>
             <a href="/request">Create new request</a>
+        </div>
+        <div>
+            <a href="/moderator">Moderator features</a>
         </div>
     </body>
 </html>

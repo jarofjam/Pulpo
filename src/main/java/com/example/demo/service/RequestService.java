@@ -235,7 +235,7 @@ public class RequestService {
         String currentUsername = authentication.getName();
         User currentUser = findUserByUsername(currentUsername);
 
-        if (requestDto.getRemove()) {
+        if (requestDto.getRemove() || "Canceled".equals(requestDto.getStatus())) {
             request.setRequestStatus(findStatusByName("Canceled"));
             request.setRemoved(LocalDateTime.now());
             request.setCancelInfo("by moderator");
