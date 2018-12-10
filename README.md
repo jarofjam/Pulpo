@@ -1,10 +1,3 @@
-## Pages
-* / - main page
-* /moderator - represents moderator features
-* /performer - represents performer features
-* /request - a page to create new requests
-* /login - custom login page
-* /registration - temporary mapping; necessary for the application to work on a database without users
  ## API
  ### Department(any role)
 #### /api/department
@@ -92,6 +85,16 @@
 ### Database schema
 ![Database schema](images/DB_schema_postgre.png)
  ## UI
- ### Create request (/request)
+ ### Request interface (/request)
+ * Create request based on existing template
+ * Create your unique request
  ### Moderator interface (/moderator)
+ * Get all typical and unique requests
+ * Edit any request that is not canceled
  ### Performer interface (/performer)
+ * Get all free requests addressed to your department
+ * Sign up for any free request
+ * Edit any request you are performing
+ ### Applicant interface (/applicant)
+ * Get all your requests
+ * Edit any request that is not canceled 
