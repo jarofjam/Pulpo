@@ -6,6 +6,9 @@
     </head>
     <body>
         Hola
+        <div>
+            <a href="/registration">Create new user</a>
+        </div>
         <form th:action="@{/logout}" method="post" style="float: right">
             <input type="submit" value="Sign Out"/>
         </form>
@@ -13,10 +16,13 @@
             <a href="/request">Create new request</a>
         </div>
         <div>
-            <a href="/moderator">Moderator features</a>
+            <a href="/moderator">Moderator interface</a>
         </div>
         <div>
-            <a href="/performer">Performer features</a>
+            <a href="/performer">Performer interface</a>
+        </div>
+        <div>
+            <a href="/applicant">Applicant interface</a>
         </div>
     </body>
 </html>

@@ -51,7 +51,7 @@ public class TemplateService {
 
     public List<TemplateDto> findAllByDepartment(String departmentName) {
         List<TemplateDto> templateDtos = new ArrayList<>();
-        List<Template> templates = new ArrayList<>();
+        List<Template> templates;
 
         if ("All".equals(departmentName)) {
             templates = templateRepository.findAll();
@@ -65,6 +65,10 @@ public class TemplateService {
         }
 
         return templateDtos;
+    }
+
+    public TemplateDto findById(Long id) {
+        return templateToTemplateDto(findTemplateById(id));
     }
 
     public void update(Long id, TemplateDto templateDto) {

@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -196,6 +197,7 @@ public class TypicalRequestService {
             }
             if ("Finished".equals((typicalRequestDto.getStatus()))) {
                 typicalRequest.setTypicalRequestStatus(findStatusByName("Finished"));
+                typicalRequest.setFinished(LocalDateTime.now());
             }
             if ("Ongoing".equals(typicalRequestDto.getStatus())) {
                 typicalRequest.setTypicalRequestStatus(findStatusByName("Ongoing"));
@@ -394,6 +396,7 @@ public class TypicalRequestService {
                 new HashMap<String, String>() {{
                     put("id", String.valueOf(value.getId()));
                     put("value", value.getValue());
+                    put("attr_id", String.valueOf(attribute.getId()));
                 }}
             );
             attributes.add(

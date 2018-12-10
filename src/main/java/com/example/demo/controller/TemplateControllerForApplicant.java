@@ -4,10 +4,7 @@ import com.example.demo.dto.TemplateDto;
 import com.example.demo.service.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +19,10 @@ public class TemplateControllerForApplicant {
             @RequestParam(name = "department", required = false, defaultValue = "All") String department
     ) {
         return templateService.findAllByDepartment(department);
+    }
+
+    @RequestMapping(value = "/api/applicant/template/{id}", method = RequestMethod.GET)
+    public TemplateDto read(@PathVariable Long id) {
+        return templateService.findById(id);
     }
 }

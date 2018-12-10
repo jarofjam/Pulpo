@@ -86,6 +86,9 @@ public class RequestService {
             if (requestFromApplicant.getDescription() != null) {
                 request.setDescription(requestFromApplicant.getDescription());
             }
+            if (requestFromApplicant.getTopic() != null) {
+                request.setTopic(requestFromApplicant.getTopic());
+            }
         }
 
         return requestToRequestDto(requestRepository.save(validate(request)));
@@ -185,6 +188,7 @@ public class RequestService {
             }
             if ("Finished".equals(requestDto.getStatus())) {
                 request.setRequestStatus(findStatusByName("Finished"));
+                request.setFinished(LocalDateTime.now());
             }
             if ("Ongoing".equals((requestDto.getStatus()))) {
                 request.setRequestStatus(findStatusByName("Ongoing"));

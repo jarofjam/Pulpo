@@ -4,6 +4,7 @@ import com.example.demo.domain.Role;
 import com.example.demo.domain.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,26 +24,30 @@ public class MappingController {
         return "index";
     }
 
+//    @PreAuthorize("hasAuthority('ADMIN')")
 //    @RequestMapping(value = "/admin", method = RequestMethod.GET)
 //    public String admin() {
 //        return "admin";
 //    }
-
+    @PreAuthorize("hasAuthority('MODERATOR')")
     @RequestMapping(value = "/moderator", method = RequestMethod.GET)
     public String moderator() {
         return "moderator";
     }
 
+    @PreAuthorize("hasAuthority('PERFORMER')")
     @RequestMapping(value = "/performer", method = RequestMethod.GET)
     public String performer() {
         return "performer";
     }
-//
-//    @RequestMapping(value = "/applicant", method = RequestMethod.GET)
-//    public String applicant() {
-//        return "applicant";
-//    }
 
+    @PreAuthorize("hasAuthority('APPLICANT')")
+    @RequestMapping(value = "/applicant", method = RequestMethod.GET)
+    public String applicant() {
+        return "applicant";
+    }
+
+    @PreAuthorize("hasAuthority('APPLICANT')")
     @RequestMapping(value = "/request", method = RequestMethod.GET)
     public String request() {
         return "request";

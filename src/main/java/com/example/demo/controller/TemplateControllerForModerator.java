@@ -19,11 +19,16 @@ public class TemplateControllerForModerator {
         templateService.create(templateDto);
     }
 
-    @RequestMapping(value = "/api/template", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/moderator/template", method = RequestMethod.GET)
     public List<TemplateDto> findAllByDepartment(
             @RequestParam(name = "department", required = false, defaultValue = "All") String department
     ) {
         return templateService.findAllByDepartment(department);
+    }
+
+    @RequestMapping(value = "/api/moderator/template/{id}", method = RequestMethod.GET)
+    public TemplateDto read(@PathVariable Long id) {
+        return templateService.findById(id);
     }
 
     @RequestMapping(value = "/api/moderator/template/{id}", method = RequestMethod.PUT)

@@ -66,6 +66,8 @@ Vue.component('my-request-row', {
             text: '',
             status: this.request.status,
             comment: this.request.comment,
+            finished: this.request.finished,
+            removed: this.request.removed,
 
             edit_comment: false,
             edit_status: false,
@@ -92,10 +94,12 @@ Vue.component('my-request-row', {
             '<td>{{ request.performer }}</td>' +
             '<td>{{ request.moderator }}</td>' +
             '<td>{{ request.created }}</td>' +
-            '<td>{{ request.finished }}</td>' +
+            '<td>{{ this.finished }}</td>' +
             '<td>{{ this.removed }}</td>' +
             '<td>' +
                 '<input type="button" class="cool_zone" v-if="update" v-on:click="do_update" value="Update" style="width: 70px; margin-bottom: 3px" />' +
+                '<br/>' +
+                '<input v-if="this.status !== \'Canceled\'" type="button" class="danger_zone" v-on:click="cancel" value="Cancel" style="width: 70px;" />' +
             '</td>' +
         '</tr>',
     methods: {
@@ -119,18 +123,38 @@ Vue.component('my-request-row', {
 
             if (this.request.typical) {
                 typicalRequestApi.update({id: this.request.id}, this.request);
+                if (this.request.status === 'Finished') {
+                    var date = new Date();
+                    this.finished = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                }
             } else {
                 requestApi.update({id: this.request.id}, this.request).then(
                     result => result.json().then(
                         data => {
-                            this.moderator = data.moderator;
                             this.removed = data.removed;
+                            this.finished = data.finished;
                         }
                     )
                 );
             }
             this.update = false;
-        }
+        },
+        cancel: function() {
+            this.status = "Canceled";
+            this.request.remove = true;
+            var date = new Date();
+            this.removed = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+            if (this.request.typical) {
+                typicalRequestApi.update({id: this.request.id}, this.request);
+            } else {
+                requestApi.update({id: this.request.id}, this.request).then(
+                    result => result.json().then(
+                        data => {
+                        }
+                    )
+                );
+            }
+        },
     },
     created: function(){
         if (this.request.typical) {
@@ -233,10 +257,15 @@ var performer = new Vue({
                         '<th>Canceled</th>' +
                         '<th>Actions</th>' +
                     '</tr>' +
-                    '<my-request-row ' +
+                    '<template v-if="myRequests.length === 0">' +
+                        'No requests found' +
+                    '</template>' +
+                    '<template v-else>' +
+                        '<my-request-row ' +
                         'v-for="request in myRequests" :key="request.id" ' +
-                        ':request="request" ' +
-                    '/>' +
+                        ':request="request"' +
+                        '/>' +
+                    '</template>' +
                 '</table>' +
             '</div>' +
         '</div>',
