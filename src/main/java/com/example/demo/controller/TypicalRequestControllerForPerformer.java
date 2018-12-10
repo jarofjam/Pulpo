@@ -16,7 +16,7 @@ public class TypicalRequestControllerForPerformer {
 
     @RequestMapping(value = "/api/performer/department/typicalrequest", method = RequestMethod.GET)
     public List<TypicalRequestDto> findAllByPerformerDepartment() {
-        return typicalRequestService.findAllByPerformerDepartment();
+        return typicalRequestService.findAllFreeByPerformerDepartment();
     }
 
     @RequestMapping(value = "/api/performer/typicalrequest", method = RequestMethod.GET)

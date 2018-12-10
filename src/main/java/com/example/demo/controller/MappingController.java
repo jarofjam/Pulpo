@@ -32,11 +32,11 @@ public class MappingController {
     public String moderator() {
         return "moderator";
     }
-//
-//    @RequestMapping(value = "/performer", method = RequestMethod.GET)
-//    public String performer() {
-//        return "performer";
-//    }
+
+    @RequestMapping(value = "/performer", method = RequestMethod.GET)
+    public String performer() {
+        return "performer";
+    }
 //
 //    @RequestMapping(value = "/applicant", method = RequestMethod.GET)
 //    public String applicant() {

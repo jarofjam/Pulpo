@@ -1,189 +1,316 @@
 
-function getIndex(list, id) {
-    for (var i = 0; i < list.length; i++) {
-        if (list[i].id === id) {
-            return i;
-        }
-    }
+var departmentApi = Vue.resource('/api/department');
+var statusApi = Vue.resource('/api/status');
+var requestApi = Vue.resource('/api/performer/request/{id}?department={department}&status={status}');
+var typicalRequestApi = Vue.resource('api/performer/typicalrequest/{id}?department={department}&status={status}');
 
-    return -1;
-}
+var departmentRequestApi = Vue.resource('/api/performer/department/request');
+var departmentTypicalRequestApi = Vue.resource('api/performer/department/typicalrequest');
 
-var performerApi = Vue.resource('/api/performer/request/{id}');
-var departmentApi = Vue.resource('/api/performer/department/request');
-
-Vue.component('public-request-summary', {
-    props: ['request', 'choose_outer'],
-    template:
-        '<div v-on:click="choose_inner" class="summary">' +
-            '<div><b>{{ request.topic }}</b></div><hr/>' +
-            '<div><i>Дата создания: {{ request.created }}</i></div>' +
-            '<div><i>Срок выполнения: {{ request.deadline }}</i></div>' +
-        '</div>',
-    methods: {
-        choose_inner: function() {
-            this.choose_outer(this.request, 'public');
-        }
-    }
-});
-
-Vue.component('private-request-summary', {
-    props: ['request', 'choose_outer'],
-    template:
-        '<div v-on:click="choose_inner" class="summary">' +
-            '<div><b>{{ request.topic }}</b></div><hr/>' +
-            '<div><i>Дата создания: {{ request.created }}</i></div>' +
-            '<div><i>Срок выполнения: {{ request.deadline }}</i></div>' +
-        '</div>',
-    methods: {
-        choose_inner: function() {
-            this.choose_outer(this.request, 'private');
-        }
-    }
-});
-
-Vue.component('public-requests', {
-    props: ['requests', 'choose_outer'],
-    template:
-        '<div>' +
-            '<p>Заявки моего департамента:</p><hr/>' +
-            '<p v-if="requests === []">Заявки отсутстсвуют</p>' +
-            '<template v-else>' +
-                '<public-request-summary v-for="request in requests" :key="request.id" :request="request" :choose_outer="choose_outer"/>' +
-            '</template>' +
-        '</div>'
-});
-
-Vue.component('private-requests', {
-    props: ['requests', 'choose_outer'],
-    template:
-        '<div>' +
-            '<p>Мои заявки: </p><hr/>' +
-            '<private-request-summary v-if="requests" v-for="request in requests" :key="request.id" :request="request" :choose_outer="choose_outer"/>' +
-            '<div v-else>Заявки отсутстсвуют</div>' +
-        '</div>'
-});
-
-Vue.component('request-info', {
-    props: ['request', 'requestByDepartment', 'requestByPerformer'],
-    template:
-        '<div>' +
-            '<p>Детали заявки: </p><hr/>' +
-            '<p><b>Статус: </b>{{ request.status }}</p>' +
-            '<p><b>Отдел: </b>{{ request.department }}</p>' +
-            '<p><b>Тема: </b>{{ request.topic }}</p>' +
-            '<p><b>Комментарий по заявке: </b>{{ request.comment }}</p>' +
-            '<p><b>Детали заявки: </b>{{ request.description }}</p>' +
-            '<input type="button" value="Взять на исполнение" v-on:click="take"/>' +
-        '</div>',
-    methods: {
-        take: function() {
-            var request = {
-                comment: this.request.comment,
-                status: 'На исполнении'
-            }
-
-            performerApi.update({id: this.request.id}, request).then(result =>
-                result.json().then(data => {
-                    var index = getIndex(this.requestByDepartment, data.id);
-                    this.requestByDepartment.splice(index, 1);
-                    this.requestByPerformer.push(data);
-                })
-            )
-        }
-    }
-});
-
-Vue.component('request-form', {
-    props: ['request', 'requestByDepartment', 'requestByPerformer'],
+Vue.component('department-request-row', {
+    props: ['request', 'requests'],
     data: function() {
         return {
-            id: '',
-            comment: ''
-        }
-    },
-    watch: {
-        request: function(newState, oldState) {
-            this.id = newState.id;
-            this.comment = newState.comment;
+            text: ''
         }
     },
     template:
-        '<div>' +
-            '<p>Детали заявки: </p><hr/>' +
-            '<p><b>Статус: </b>{{ request.status }}</p>' +
-            '<p><b>Отдел: </b>{{ request.department }}</p>' +
-            '<p><b>Тема: </b>{{ request.topic }}</p>' +
-            '<p><b>Комментарий по заявке: </b><br/><textarea cols="50" rows="12" v-model="comment"></textarea></p>' +
-            '<p><b>Детали заявки: </b>{{ request.description }}</p>' +
-            '<input type="button" value="Обновить комментарий" v-on:click="save" />' +
-        '</div>',
+        '<tr>' +
+            '<td>{{ request.topic }}</td>' +
+            '<td>{{ this.text }}</td>' +
+            '<td>{{ request.comment }}</td>' +
+            '<td>{{ request.author }}</td>' +
+            '<td>{{ request.moderator }}</td>' +
+            '<td>{{ request.created }}</td>' +
+            '<td><input type="button" class="cool_zone" value="Sign up" v-on:click="signUp" /></td>' +
+        '</tr>',
     methods: {
-        save: function() {
-            var request = {
-                status: this.request.status,
-                comment: this.comment
-            };
+        signUp: function() {
+            if (this.request.typical) {
+                this.request.status = 'Ongoing';
 
-            performerApi.update({id: this.request.id}, request).then(result =>
-            result.json().then(data => {
-                    var index = getIndex(this.requestByPerformer, data.id);
-                    this.requestByPerformer.splice(index, 1, data);
-                })
-            )
+                typicalRequestApi.update({id: this.request.id}, this.request).then(
+                    this.requests.splice(this.requests.indexOf(this.request), 1)
+                )
+            } else {
+                this.request.status = 'Ongoing';
+
+                requestApi.update({id: this.request.id}, this.request).then(
+                    this.requests.splice(this.requests.indexOf(this.request), 1)
+                )
+            }
+        }
+    },
+    created: function(){
+        if (this.request.typical) {
+            var text_parts = this.request.text.split('$');
+            for (var i = 0, j = 0; i < text_parts.length; i++) {
+                if (i % 2 === 0) {
+                    this.text += text_parts[i];
+                } else {
+                    this.text += this.request.values[j].value;
+                    j++;
+                }
+            }
+        } else {
+            this.text = this.request.description;
         }
     }
+});
+
+
+Vue.component('my-request-row', {
+    props: ['request'],
+    data: function() {
+        return {
+            text: '',
+            status: this.request.status,
+            comment: this.request.comment,
+
+            edit_comment: false,
+            edit_status: false,
+
+            update: false
+        }
+    },
+    template:
+        '<tr>' +
+            '<td>{{ request.topic }}</td>' +
+            '<td>{{ this.text }}</td>' +
+            '<td v-if="this.edit_comment"><textarea v-on:change="done_edit_comment" v-model="comment"> {{this.comment}} </textarea></td>' +
+                '<td v-else v-on:click="do_edit_comment" class="clickable" title="Edit" >{{ this.comment }}</td>' +
+            '<td v-if="this.edit_status" v-on:change="done_edit_status">' +
+                '<select v-model="status">' +
+                    '<option value="Ongoing">Ongoing</option>' +
+                    '<option value="Invalid">Invalid</option>' +
+                    '<option value="Canceled">Canceled</option>' +
+                    '<option value="Finished">Finished</option>' +
+                '</select>'+
+            '</td>' +
+            '<td v-else v-on:click="do_edit_status" class="clickable" title="Edit">{{ this.status }}</td>' +
+            '<td>{{ request.author }}</td>' +
+            '<td>{{ request.performer }}</td>' +
+            '<td>{{ request.moderator }}</td>' +
+            '<td>{{ request.created }}</td>' +
+            '<td>{{ request.finished }}</td>' +
+            '<td>{{ this.removed }}</td>' +
+            '<td>' +
+                '<input type="button" class="cool_zone" v-if="update" v-on:click="do_update" value="Update" style="width: 70px; margin-bottom: 3px" />' +
+            '</td>' +
+        '</tr>',
+    methods: {
+        do_edit_comment: function() {
+            this.edit_comment = this.status !== 'Canceled';
+        },
+        done_edit_comment: function() {
+            this.edit_comment = false;
+            this.update = true;
+        },
+        do_edit_status: function() {
+            this.edit_status = this.status !== 'Canceled';
+        },
+        done_edit_status: function() {
+            this.edit_status = false;
+            this.update = true;
+        },
+        do_update: function() {
+            this.request.comment = this.comment;
+            this.request.status = this.status;
+
+            if (this.request.typical) {
+                typicalRequestApi.update({id: this.request.id}, this.request);
+            } else {
+                requestApi.update({id: this.request.id}, this.request).then(
+                    result => result.json().then(
+                        data => {
+                            this.moderator = data.moderator;
+                            this.removed = data.removed;
+                        }
+                    )
+                );
+            }
+            this.update = false;
+        }
+    },
+    created: function(){
+        if (this.request.typical) {
+            var text_parts = this.request.text.split('$');
+            for (var i = 0, j = 0; i < text_parts.length; i++) {
+                if (i % 2 === 0) {
+                    this.text += text_parts[i];
+                } else {
+                    this.text += this.request.values[j].value;
+                    j++;
+                }
+            }
+        } else {
+            this.text = this.request.description;
+        }
+    }
+});
+
+Vue.component('option-department', {
+    props: ['department'],
+    template:
+        '<option :value=department.name>{{ department.name }}</option>'
+});
+
+Vue.component('option-status', {
+    props: ['status'],
+    template:
+        '<option :value=status.name>{{ status.name }}</option>'
 });
 
 var performer = new Vue({
     el: '#performer',
-    template:
-        '<div>' +
-            '<div class="block" style="position: fixed; border-right: 1px solid grey;">' +
-                '<p class="summary" v-on:click="setPublic">Заявки моего департамента</p>'+
-                '<p class="summary" v-on:click="setPrivate">Мои заявки</p>'+
-            '</div>' +
-            '<div class="block" style="width: 30%; margin-left: 20%">' +
-                '<public-requests v-if="public" :requests="requestByDepartment" :choose_outer="choose_outer" />' +
-                '<private-requests v-if="!public" :requests="requestByPerformer" :choose_outer="choose_outer" />' +
-            '</div>' +
-            '<div v-if="request" class="block" style="width: 40%; border-left: 1px solid grey; position: fixed; left:55%">' +
-                '<request-info v-if="this.form_type === \'public\'" :request="request" :requestByDepartment="requestByDepartment" :requestByPerformer="requestByPerformer" />' +
-                '<request-form v-else :request="request" :requestByDepartment="requestByDepartment" :requestByPerformer="requestByPerformer" />' +
-            '</div>' +
-        '</div>',
     data: function() {
         return {
-            request: null,
-            requestByDepartment: [],
-            requestByPerformer: [],
-            public: true,
-            form_type: ''
+            departments: [],
+            statuses: [],
+            departmentRequests: [],
+            myRequests: [],
+
+            chosen_department: 'All',
+            chosen_status: 'All',
+
+            choose_department: false,
+            choose_status: false,
+
+            myOrDepartment: 'my'
         }
     },
+    template:
+        '<div>' +
+            '<div v-if="myOrDepartment === \'department\'">' +
+                '<input id="notChosen" type="button" value="Show my requests" v-on:click="show_my" />' +
+                '<input id="chosen" type="button" value="Show my department\'s requests" v-on:click="show_department" />' +
+
+                '<table>' +
+                    '<caption>Free requests for my department</caption>' +
+                    '<tr>' +
+                        '<th>Topic</th>' +
+                        '<th>Text</th>' +
+                        '<th>Comment</th>' +
+                        '<th>Author</th>' +
+                        '<th>Moderator</th>' +
+                        '<th>Created</th>' +
+                        '<th>Actions</th>' +
+                    '</tr>' +
+                    '<template v-if="departmentRequests.length === 0">' +
+                        'No requests found' +
+                    '</template>' +
+                    '<template v-else>' +
+                        '<department-request-row ' +
+                            'v-for="request in departmentRequests" :key="request.id" ' +
+                            ':request="request" :requests="departmentRequests"' +
+                        '/>' +
+                    '</template>' +
+                '</table>' +
+            '</div>' +
+            '<div v-if="myOrDepartment === \'my\'">' +
+                '<input id="chosen" type="button" value="Show my requests" v-on:click="show_my" />' +
+                '<input id="notChosen" type="button" value="Show my department\'s requests" v-on:click="show_department" />' +
+                '<table>' +
+                    '<tr>' +
+                        '<th>Topic</th>' +
+                        '<th>Text</th>' +
+                        '<th>Comment</th>' +
+                        '<th v-if="this.choose_status" v-on:change="done_choose_status" >' +
+                            '<select v-model="chosen_status">' +
+                                '<option value="All">All</option>' +
+                                '<option-status ' +
+                                    'v-for="status in statuses" :key="status.id" ' +
+                                    ':status="status" ' +
+                                '/>' +
+                            '</select>' +
+                        '</th>' +
+                            '<th v-else v-on:click="do_choose_status" class="clickable" title="Filer by status">Status: {{ this.chosen_status }}</th>' +
+                        '<th>Author</th>' +
+                        '<th>Performer</th>' +
+                        '<th>Moderator</th>' +
+                        '<th>Created</th>' +
+                        '<th>Finished</th>' +
+                        '<th>Canceled</th>' +
+                        '<th>Actions</th>' +
+                    '</tr>' +
+                    '<my-request-row ' +
+                        'v-for="request in myRequests" :key="request.id" ' +
+                        ':request="request" ' +
+                    '/>' +
+                '</table>' +
+            '</div>' +
+        '</div>',
     methods: {
-        choose_outer: function(request, form_type) {
-            this.request = request;
-            this.form_type = form_type;
+        show_my: function() {
+            this.myOrDepartment = 'my';
+            this.refresh_my_requests();
         },
-        setPrivate: function() {
-            this.public = false;
+        show_department: function() {
+            this.myOrDepartment = 'department';
+            this.refresh_department_requests();
         },
-        setPublic: function() {
-            this.public = true;
+        refresh_my_requests: function() {
+            this.myRequests = [];
+
+            requestApi.get({department: this.chosen_department, status: this.chosen_status}).then(
+                result => result.json().then(
+                    data => data.forEach(request => {
+                        request.typical = false;
+                        this.myRequests.push(request);
+                    })
+                )
+            );
+
+            typicalRequestApi.get({department: this.chosen_department, status: this.chosen_status}).then(
+                result => result.json().then(
+                    data => data.forEach(typicalRequest => {
+                        typicalRequest.typical = true;
+                        this.myRequests.push(typicalRequest);
+                    })
+                )
+            );
+        },
+        refresh_department_requests: function() {
+            this.departmentRequests = [];
+
+            departmentRequestApi.get().then(
+                result => result.json().then(
+                    data => data.forEach(request => {
+                        request.typical = false;
+                        this.departmentRequests.push(request);
+                    })
+                )
+            )
+            departmentTypicalRequestApi.get().then(
+                result => result.json().then(
+                    data => data.forEach(request => {
+                        request.typical = true;
+                        this.departmentRequests.push(request);
+                    })
+                )
+            )
+        },
+        do_choose_status: function() {
+            this.choose_status = true;
+        },
+        done_choose_status: function() {
+            this.refresh_my_requests();
+            this.choose_status = false;
         }
     },
     created: function() {
-        departmentApi.get().then(result =>
-            result.json().then(data =>
-                data.forEach(request => this.requestByDepartment.push(request))
+        this.refresh_my_requests();
+        this.refresh_department_requests();
+
+        departmentApi.get().then(
+            result => result.json().then(
+                data => data.forEach(department => this.departments.push(department))
             )
         );
-
-        performerApi.get().then(result =>
-            result.json().then(data =>
-                data.forEach(request => this.requestByPerformer.push(request))
+        statusApi.get().then(
+            result => result.json().then(
+                data => data.forEach(status => this.statuses.push(status))
             )
-        )
+        );
     }
 });

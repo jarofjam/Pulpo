@@ -122,12 +122,12 @@ public class RequestService {
     }
 
 //Performer
-    public List<RequestDto> findAllByPerformerDepartment() {
+    public List<RequestDto> findAllFreeByPerformerDepartment() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         User currentUser = findUserByUsername(currentUsername);
 
-        return requestListToRequestDtoList(requestRepository.findAllByRequestDepartment(currentUser.getUserDepartment()));
+        return requestListToRequestDtoList(requestRepository.findAllByRequestDepartmentAndRequestStatus(currentUser.getUserDepartment(), findStatusByName("Checked")));
     }
 
     public List<RequestDto> findAllByPerformerAndStatus(String statusName) {
@@ -169,7 +169,7 @@ public class RequestService {
         }
 
         //Update
-        if (requestDto.getRemove()) {
+        if (requestDto.getRemove() || "Canceled".equals(requestDto.getStatus())) {
             request.setRequestStatus(findStatusByName("Canceled"));
             request.setRemoved(LocalDateTime.now());
             request.setCancelInfo("by performer");

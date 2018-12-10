@@ -46,8 +46,8 @@ Vue.component('request-row', {
             '<td>{{ request.finished }}</td>' +
             '<td>{{ this.removed }}</td>' +
             '<td>' +
-                '<span class="cool_zone" v-if="update" v-on:click="do_update">Update</span>' +
-                '<span class="danger_zone" v-on:click="remove">Delete</span>' +
+                '<input type="button" class="cool_zone" v-if="update" v-on:click="do_update" value="Update" style="width: 70px; margin-bottom: 3px" />' +
+                '<input type="button" class="danger_zone" v-on:click="remove" value="Delete" style="width: 70px;" />' +
             '</td>' +
         '</tr>',
     methods: {
@@ -177,9 +177,10 @@ var requests = new Vue({
                     '<th v-if="this.choose_status" v-on:change="done_choose_status" >' +
                         '<select v-model="chosen_status">' +
                             '<option value="All">All</option>' +
-                            '<option value="Canceled">Canceled</option>' +
-                            '<option value="Checked">Checked</option>' +
-                            '<option value="Invalid">Invalid</option>' +
+                            '<option-status ' +
+                                'v-for="status in statuses" :key="status.id"' +
+                                ':status="status" ' +
+                            '/>' +
                         '</select>' +
                     '</th>' +
                         '<th v-else v-on:click="do_choose_status" class="clickable" title="Filer by status">Status: {{ this.chosen_status }}</th>' +

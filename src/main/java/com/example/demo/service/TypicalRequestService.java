@@ -127,13 +127,13 @@ public class TypicalRequestService {
         return typicalRequestListToTypicalRequestDtoList(typicalRequests);
     }
 //Performer
-    public List<TypicalRequestDto> findAllByPerformerDepartment() {
+    public List<TypicalRequestDto> findAllFreeByPerformerDepartment() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         User currentUser = findUserByUsername(currentUsername);
 
         List<TypicalRequest> typicalRequests = new ArrayList<>();
-        List<TypicalRequest> tempTypicalRequests = typicalRequestRepository.findAll();
+        List<TypicalRequest> tempTypicalRequests = typicalRequestRepository.findAllByTypicalRequestStatus(findStatusByName("Checked"));
 
         for (TypicalRequest typicalRequest :tempTypicalRequests) {
             if (typicalRequest.getRequestTemplate().getTemplateDepartment() == currentUser.getUserDepartment()) {
@@ -186,7 +186,7 @@ public class TypicalRequestService {
         typicalRequest.setTypicalRequestPerformer(currentUser);
 
         //Update
-        if (typicalRequestDto.getRemove()) {
+        if (typicalRequestDto.getRemove() || "Canceled".equals(typicalRequestDto.getStatus())) {
             typicalRequest.setRemoved(LocalDateTime.now());
             typicalRequest.setCancelInfo("by performer");
             typicalRequest.setTypicalRequestStatus(findStatusByName("Canceled"));

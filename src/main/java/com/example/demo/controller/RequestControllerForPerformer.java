@@ -16,7 +16,7 @@ public class RequestControllerForPerformer {
 
     @RequestMapping(value = "/api/performer/department/request", method = RequestMethod.GET)
     public List<RequestDto> findAllByPerformerDepartment() {
-        return requestService.findAllByPerformerDepartment();
+        return requestService.findAllFreeByPerformerDepartment();
     }
 
     @RequestMapping(value = "/api/performer/request", method = RequestMethod.GET)
