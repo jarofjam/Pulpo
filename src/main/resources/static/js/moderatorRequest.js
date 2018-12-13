@@ -52,21 +52,27 @@ Vue.component('request-row', {
         '</tr>',
     methods: {
         do_edit_topic: function() {
-            this.edit_topic = this.status !== 'Canceled';
+            if (this.status !== 'Canceled' && this.status !== 'Finished') {
+                this.edit_topic = true;
+            }
         },
         done_edit_topic: function() {
             this.edit_topic = false;
             this.update = true;
         },
         do_edit_comment: function() {
-            this.edit_comment = this.status !== 'Canceled';
+            if (this.status !== 'Canceled' && this.status !== 'Finished') {
+                this.edit_comment = true;
+            }
         },
         done_edit_comment: function() {
             this.edit_comment = false;
             this.update = true;
         },
         do_edit_status: function() {
-            this.edit_status = this.status !== 'Canceled';
+            if (this.status !== 'Canceled' && this.status !== 'Finished') {
+                this.edit_status = true;
+            }
         },
         done_edit_status: function() {
             this.edit_status = false;

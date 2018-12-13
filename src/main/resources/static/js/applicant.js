@@ -104,7 +104,7 @@ Vue.component('request-row', {
             '<td>{{ this.removed }}</td>' +
             '<td>' +
                 '<input type="button" class="cool_zone" v-if="update" v-on:click="do_update" value="Update" style="width: 70px; margin-bottom: 3px" />' +
-                '<input v-if="this.status !== \'Canceled\'" type="button" class="danger_zone" v-on:click="cancel" value="Cancel" style="width: 70px;" />' +
+                '<input v-if="this.status !== \'Canceled\' && this.status !== \'Finished\'" type="button" class="danger_zone" v-on:click="cancel" value="Cancel" style="width: 70px;" />' +
             '</td>' +
         '</tr>',
     methods: {
@@ -121,7 +121,7 @@ Vue.component('request-row', {
             this.update = true;
         },
         do_edit_text: function() {
-            if (this.status !== 'Canceled') {
+            if (this.status !== 'Canceled' && this.status !== 'Finished') {
                 this.edit_text = true;
 
                 if (this.request.typical) {
@@ -139,14 +139,16 @@ Vue.component('request-row', {
         done_edit_text: function() {
             this.edit_text = false;
             this.update = true;
-            this.text_parts = this.temp_parts;
-            this.text = '';
-            for (var i = 0, j = 0; i < this.text_parts.length; i++) {
-                if (i % 2 === 0) {
-                    this.text += this.text_parts[i];
-                } else {
-                    this.text += this.values[j].value;
-                    j++;
+            if (this.request.typical) {
+                this.text_parts = this.temp_parts;
+                this.text = '';
+                for (var i = 0, j = 0; i < this.text_parts.length; i++) {
+                    if (i % 2 === 0) {
+                        this.text += this.text_parts[i];
+                    } else {
+                        this.text += this.values[j].value;
+                        j++;
+                    }
                 }
             }
         },

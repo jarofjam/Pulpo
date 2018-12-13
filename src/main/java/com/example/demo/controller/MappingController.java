@@ -35,6 +35,12 @@ public class MappingController {
         return "moderator";
     }
 
+    @PreAuthorize("hasAuthority('MODERATOR')")
+    @RequestMapping(value = "/template", method = RequestMethod.GET)
+    public String template() {
+        return "template";
+    }
+
     @PreAuthorize("hasAuthority('PERFORMER')")
     @RequestMapping(value = "/performer", method = RequestMethod.GET)
     public String performer() {

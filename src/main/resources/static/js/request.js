@@ -85,7 +85,11 @@ Vue.component('template-buttons', {
             this.templates = [];
             templateApi.get({department: newState.name}).then(
                 result => result.json().then(
-                    data => data.forEach(template => this.templates.push(template))
+                    data => data.forEach(template => {
+                        if (!template.removed) {
+                            this.templates.push(template);
+                        }
+                    })
                 )
             );
         }

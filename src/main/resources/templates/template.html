@@ -2,22 +2,22 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Applicant</title>
+        <title>Templates</title>
+
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
 
         <link rel="stylesheet" href="/css/table_based.css">
     </head>
     <body>
-
         <div>
             <a href="/">To main page</a>
         </div>
         <form th:action="@{/logout}" method="post">
             <input type="submit" value="Sign Out" class="notChosen"/>
         </form>
-        <div id="applicant"></div>
+        <div id="template"></div>
 
-        <script src="/js/applicant.js"></script>
+        <script src="js/template.js"></script>
     </body>
 </html>

@@ -7,13 +7,17 @@
     <body>
         Hola
         <div>
-            <a href="/registration">Create new user</a>
+            <a href="/registration"><i>Create new user</i></a>
         </div>
-        <form th:action="@{/logout}" method="post" style="float: right">
+        <form th:action="@{/logout}" method="post">
             <input type="submit" value="Sign Out"/>
         </form>
+        <hr/>
         <div>
             <a href="/request">Create new request</a>
+        </div>
+        <div>
+            <a href="/template">Edit templates</a>
         </div>
         <div>
             <a href="/moderator">Moderator interface</a>

@@ -21,7 +21,9 @@ th {
 
 td,
 th {
-    padding: 5px;
+    padding: 10px;
+    word-wrap: break-word;
+    max-width: 300px;
 }
 
 .clickable:hover {
@@ -56,8 +58,8 @@ th {
     transition: 300ms;
 }
 
-#chosen,
-#notChosen {
+.chosen,
+.notChosen {
     background-color: #555555;
     transition: 300ms;
     padding: 5px;
@@ -65,16 +67,16 @@ th {
     border-radius: 3px;
 }
 
-#chosen {
+.chosen {
     border-color: #555555;
 }
 
-#notChosen {
+.notChosen {
     background-color: #D5D5D5;
     cursor: pointer;
 }
 
-#notChosen:hover {
+.notChosen:hover {
     background-color: #AAAAAA;
     transition: 300ms;
 }

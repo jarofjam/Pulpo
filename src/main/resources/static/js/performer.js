@@ -99,19 +99,23 @@ Vue.component('my-request-row', {
             '<td>' +
                 '<input type="button" class="cool_zone" v-if="update" v-on:click="do_update" value="Update" style="width: 70px; margin-bottom: 3px" />' +
                 '<br/>' +
-                '<input v-if="this.status !== \'Canceled\'" type="button" class="danger_zone" v-on:click="cancel" value="Cancel" style="width: 70px;" />' +
+                '<input v-if="this.status !== \'Canceled\' && this.status !== \'Finished\'" type="button" class="danger_zone" v-on:click="cancel" value="Cancel" style="width: 70px;" />' +
             '</td>' +
         '</tr>',
     methods: {
         do_edit_comment: function() {
-            this.edit_comment = this.status !== 'Canceled';
+            if (this.status !== 'Canceled' && this.status !== 'Finished') {
+                this.edit_comment = true;
+            }
         },
         done_edit_comment: function() {
             this.edit_comment = false;
             this.update = true;
         },
         do_edit_status: function() {
-            this.edit_status = this.status !== 'Canceled';
+            if (this.status !== 'Canceled' && this.status !== 'Finished') {
+                this.edit_status = true;
+            }
         },
         done_edit_status: function() {
             this.edit_status = false;
@@ -206,8 +210,8 @@ var performer = new Vue({
     template:
         '<div>' +
             '<div v-if="myOrDepartment === \'department\'">' +
-                '<input id="notChosen" type="button" value="Show my requests" v-on:click="show_my" />' +
-                '<input id="chosen" type="button" value="Show my department\'s requests" v-on:click="show_department" />' +
+                '<input class="notChosen" type="button" value="Show my requests" v-on:click="show_my" />' +
+                '<input class="chosen" type="button" value="Show my department\'s requests" v-on:click="show_department" />' +
 
                 '<table>' +
                     '<caption>Free requests for my department</caption>' +
@@ -232,8 +236,8 @@ var performer = new Vue({
                 '</table>' +
             '</div>' +
             '<div v-if="myOrDepartment === \'my\'">' +
-                '<input id="chosen" type="button" value="Show my requests" v-on:click="show_my" />' +
-                '<input id="notChosen" type="button" value="Show my department\'s requests" v-on:click="show_department" />' +
+                '<input class="chosen" type="button" value="Show my requests" v-on:click="show_my" />' +
+                '<input class="notChosen" type="button" value="Show my department\'s requests" v-on:click="show_department" />' +
                 '<table>' +
                     '<tr>' +
                         '<th>Topic</th>' +
