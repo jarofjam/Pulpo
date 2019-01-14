@@ -214,8 +214,8 @@ var temp = new Vue({
                         '</select>' +
                     '</p>' +
                     '<p style="margin-left: 10px;">Enter topic: <input type="text" v-model="create_template_topic" /></p>' +
-                    '<textarea cols="53" rows="17" style="float:left; margin: 0 10px" v-model="template_input" placeholder="Enter template html">{{ template_input }}</textarea>' +
-                    '<div style="width: 49%; height: 258px; border: 1px solid gray; margin: 0 10px; position: absolute; right: 0;" v-html="template_input"></div>' +
+                    '<textarea cols="53" rows="16" style="float:left; margin: 0 10px" v-model="template_input" placeholder="Enter template html">{{ template_input }}</textarea>' +
+                    '<div style="width: 49%; height: 245px; border: 1px solid gray; margin: 0 10px; position: absolute; right: 0;" v-html="template_input"></div>' +
                 '</div>' +
             '</div>' +
             '<table>' +
@@ -268,9 +268,7 @@ var temp = new Vue({
             templateApi.save({}, template);
             this.hide_template_editor();
 
-            var date = new Date();
-            this.template.created = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-            this.templates.push(template);
+            location.reload();
         },
         do_choose_department: function() {
             this.choose_department = true;

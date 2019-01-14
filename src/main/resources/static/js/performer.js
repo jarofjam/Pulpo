@@ -79,7 +79,7 @@ Vue.component('my-request-row', {
         '<tr>' +
             '<td>{{ request.topic }}</td>' +
             '<td>{{ this.text }}</td>' +
-            '<td v-if="this.edit_comment"><textarea v-on:change="done_edit_comment" v-model="comment"> {{this.comment}} </textarea></td>' +
+            '<td v-if="this.edit_comment"><textarea cols="30" rows="10" v-on:change="done_edit_comment" v-model="comment"> {{this.comment}} </textarea></td>' +
                 '<td v-else v-on:click="do_edit_comment" class="clickable" title="Edit" >{{ this.comment }}</td>' +
             '<td v-if="this.edit_status" v-on:change="done_edit_status">' +
                 '<select v-model="status">' +

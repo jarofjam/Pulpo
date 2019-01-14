@@ -25,10 +25,10 @@ Vue.component('request-row', {
     template:
         '<tr>' +
             '<td>{{ request.department }}</td>' +
-            '<td v-if="this.edit_topic"><textarea v-on:change="done_edit_topic" v-model="topic"> {{this.topic}} </textarea></td>' +
+            '<td v-if="this.edit_topic"><textarea cols="30" rows="10" v-on:change="done_edit_topic" v-model="topic"> {{this.topic}} </textarea></td>' +
                 '<td v-else v-on:click="do_edit_topic" class="clickable" title="Edit" >{{ this.topic }}</td>' +
             '<td>{{ this.text }}</td>' +
-            '<td v-if="this.edit_comment"><textarea v-on:change="done_edit_comment" v-model="comment"> {{this.comment}} </textarea></td>' +
+            '<td v-if="this.edit_comment"><textarea cols="30" rows="10" v-on:change="done_edit_comment" v-model="comment"> {{this.comment}} </textarea></td>' +
                 '<td v-else v-on:click="do_edit_comment" class="clickable" title="Edit" >{{ this.comment }}</td>' +
             '<td v-if="this.edit_status" v-on:change="done_edit_status">' +
                 '<select v-model="status">' +

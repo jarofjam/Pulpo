@@ -58,7 +58,7 @@ public class TypicalRequestService {
 
         typicalRequest.setTypicalRequestAuthor(currentUser);
         typicalRequest.setCreated(LocalDateTime.now());
-        typicalRequest.setTypicalRequestStatus(findStatusByName("New"));
+        typicalRequest.setTypicalRequestStatus(findStatusByName("Checked"));
 
         typicalRequestDtoToTypicalRequest(typicalRequestDto, typicalRequest);
     }

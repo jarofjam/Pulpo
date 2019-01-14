@@ -73,13 +73,15 @@ Vue.component('request-row', {
 
             text_parts: [],
             temp_parts: [],
-            values: this.request.values
+            values: this.request.values,
+
+            removed: this.request.removed
         }
     },
     template:
         '<tr>' +
             '<td>{{ request.department }}</td>' +
-            '<td v-if="this.edit_topic && !this.request.typical"><textarea v-on:change="done_edit_topic" v-model="topic"> {{this.topic}} </textarea></td>' +
+            '<td v-if="this.edit_topic && !this.request.typical"><textarea cols="30" rows="10" v-on:change="done_edit_topic" v-model="topic"> {{this.topic}} </textarea></td>' +
                 '<td v-else v-on:click="do_edit_topic" class="clickable" title="Edit" >{{ this.topic }}</td>' +
             '<td v-if="this.edit_text">' +
                 '<template v-if="this.request.typical">' +
@@ -90,7 +92,7 @@ Vue.component('request-row', {
                     '/>' +
                 '</template>' +
                 '<template v-else>' +
-                    '<textarea v-model="text" v-on:change="done_edit_text">{{ this.text }}</textarea>' +
+                    '<textarea cols="30" rows="10" v-model="text" v-on:change="done_edit_text">{{ this.text }}</textarea>' +
                 '</template>' +
             '</td>' +
                 '<td v-else v-on:click="do_edit_text" class="clickable">{{ this.text }}</td>' +

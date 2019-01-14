@@ -24,11 +24,11 @@ public class MappingController {
         return "index";
     }
 
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    @RequestMapping(value = "/admin", method = RequestMethod.GET)
-//    public String admin() {
-//        return "admin";
-//    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
+    public String admin() {
+        return "admin";
+    }
     @PreAuthorize("hasAuthority('MODERATOR')")
     @RequestMapping(value = "/moderator", method = RequestMethod.GET)
     public String moderator() {

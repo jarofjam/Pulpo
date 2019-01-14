@@ -237,7 +237,7 @@ Vue.component('request-form', {
             '<hr/>' +
             'Department: {{ department.name }}' +
             '<p>Topic: <input type="text" v-model="topic" /></p>' +
-            'Decription: <textarea v-model="description"></textarea> '+
+            '<p>Description: </p><textarea v-model="description" cols="40" rows="15"></textarea> '+
             '<hr/>' +
             '<input type="button" value="Create request" v-on:click="save" />' +
         '</div>',
