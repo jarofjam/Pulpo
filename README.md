@@ -1,4 +1,33 @@
- ## API
+# Pulpo
+An extensible application for generalization and automation of the process of solving problems of employees.
+## General description
+<p>The main idea of the project is to create a single interface and a handler for all corporate problems that may arise from an employee, whether it is a broken printer, an application for raising a subordinate or an application for technical support.</p>
+<p>The application consists of a set of connected blocks, each of which performs its task, for example, a block that supports the system of typical requests, a block that works with tags or block that performs automated requests.</p>
+<p>The main advantage of the system becomes possible due to two factors:<br>
+- all requests that are processed are created by people working in the same place and atmosphere;<br>
+- all requests go through one place.<br>
+Due to this, the execution of many requests can be automated or at least accelerated and it also becomes possible to form a unified knowledge base storing in oneself experience that focuses on the needs of specific people in a particular place.</p>
+<p>At the moment the product is just an mvp. But thanks to its composite structure, it can already be used to establish, record, and fulfill the requests of employees.</p>
+<p>A more detailed description of the parts implemented is given below.</p>
+
+## Database
+### Database schema
+![Database schema](images/DB_schema_postgre.png)
+ ## UI
+ ### Request interface (/request)
+ * Create request based on existing template
+ * Create your unique request
+ ### Moderator interface (/moderator)
+ * Get all typical and unique requests
+ * Edit any request that is not canceled
+ ### Performer interface (/performer)
+ * Get all free requests addressed to your department
+ * Sign up for any free request
+ * Edit any request you are performing
+ ### Applicant interface (/applicant)
+ * Get all your requests
+ * Edit any request that is not canceled 
+## API
  ### Department(any role)
 #### /api/department
 * Http method GET: to get all departments
@@ -80,21 +109,3 @@
 #### /api/moderator/typicalrequest/{id}
 * Http method DELETE: to delete a typical request
 * Http method PUT: to update a typical request(change status or comment)
-
- ## Database
-### Database schema
-![Database schema](images/DB_schema_postgre.png)
- ## UI
- ### Request interface (/request)
- * Create request based on existing template
- * Create your unique request
- ### Moderator interface (/moderator)
- * Get all typical and unique requests
- * Edit any request that is not canceled
- ### Performer interface (/performer)
- * Get all free requests addressed to your department
- * Sign up for any free request
- * Edit any request you are performing
- ### Applicant interface (/applicant)
- * Get all your requests
- * Edit any request that is not canceled 
