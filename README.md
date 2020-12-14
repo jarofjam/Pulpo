@@ -1,8 +1,8 @@
 # Pulpo
 An extensible application for generalization and automation of the process of solving problems of employees.
 ## General description
-<p>The main idea of the project is to create a single interface and a handler for all corporate problems that may arise from an employee, whether it is a broken printer, an application for raising a subordinate or an application for technical support.</p>
-<p>The application consists of a set of connected blocks, each of which performs its task, for example, a block that supports the system of typical requests, a block that works with tags or block that performs automated requests.</p>
+<p>The main idea of the project is to create a single interface and a handler for all corporate problems that may arise from an employee, whether it is a broken printer, an application for raising a subordinate, or an application for technical support.</p>
+<p>The application consists of a set of connected blocks, each of which performs its task, for example, a block that supports the system of typical requests, a block that works with tags, or a block that performs automated requests.</p>
 <p>The main advantage of the system becomes possible due to two factors:<br>
 - all requests that are processed are created by people working in the same place and atmosphere;<br>
 - all requests go through one place.<br>
@@ -15,7 +15,7 @@ Due to this, the execution of many requests can be automated or at least acceler
 ![Database schema](images/DB_schema_postgre.png)
  ## UI
  ### Request interface (/request)
- * Create request based on existing template
+ * Create request based on an existing template
  * Create your unique request
  ### Moderator interface (/moderator)
  * Get all typical and unique requests
@@ -63,26 +63,26 @@ Due to this, the execution of many requests can be automated or at least acceler
 * Http method DELETE: to delete a status
 ### Request(applicant)
 #### /api/applicant/request[?status={status}&department={department}]
-* Http method GET: to get all requests(or filter them by status and(or) department) which were created by a logged in user 
-* Http method POST: to create a new request with logged in user as an applicant
+* Http method GET: to get all requests(or filter them by status and(or) department) that were created by a logged-in user 
+* Http method POST: to create a new request with logged-in user as an applicant
 #### /api/applicant/request/{id}
 * Http method PUT: to update a request(cancel it or change description)
 ### Request(performer)
 #### /api/performer/department/request
 * Http method GET: to get all requests addressed to the department of the currently logged in user
 #### /api/performer/request[?status={status}]
-* Http method GET: to get all requests currently logged in user is assigned for as a performer(or filter them by status)
+* Http method GET: to get all requests currently logged in user is assigned as a performer(or filter them by status)
 #### /api/performer/request/{id}
-* Http method PUT: to update a request(change status, sigh up for it or change comment) 
+* Http method PUT: to update a request(change status, sigh up for it, or change comment) 
 ### Request(moderator)
 #### /api/moderator/request[?status={status}&department={department}]
 * Http method GET: to get all requests(or filter them by status and(or) department) 
 #### /api/moderator/request/{id}
-* Http method PUT: to change a request(change status or update topic, description, comment or dealine)
+* Http method PUT: to change a request(change status or update topic, description, comment or deadline)
 * Http method DELETE: to delete a request
 ### Template(applicant)
 #### /api/applicant/template?department={department}
-* Http method GET: to get all temolates(or filtered by department)
+* Http method GET: to get all templates(or filtered by department)
 ### Template(moderator)
 #### /api/noderator/template
 * Http method GET: to get all templates
@@ -92,17 +92,17 @@ Due to this, the execution of many requests can be automated or at least acceler
 * Http method DELETE: to delete a template
 ### Typical request(applicant)
 #### /api/applicant/typicalrequest[?status={status}&department={department}]
-* Http method GET: to get all typical requests(or filter them by status and(or) department) which were created by a logged in user 
-* Http method POST: to create a new typical request with logged in user as an applicant
+* Http method GET: to get all typical requests(or filter them by status and(or) department) which were created by a logged-in user 
+* Http method POST: to create a new typical request with logged-in user as an applicant
 #### /api/applicant/typicalrequest/{id}
 * Http method PUT: to update a typical request(cancel it)
 ### Typical request(performer)
 #### /api/performer/department/typicalrequest
-* Http method GET: to get all typical requests addressed to the department of the currently logged in user
+* Http method GET: to get all typical requests addressed to the department of the currently logged-in user
 #### /api/performer/typicalrequest[?status={status}]
 * Http method GET: to get all typical requests currently logged in user is assigned for as a performer(or filter them by status)
 #### /api/performer/typicalrequest/{id}
-* Http method PUT: to update a request(change status, sigh up for it or change comment)
+* Http method PUT: to update a request(change status, sigh up for it, or change comment)
 ### Typical request(moderator)
 #### /api/moderator/typicalrequest[?status={status}&department={department}]
 * Http method GET: to get all typical requests(or filter them by status and(or) department) 
